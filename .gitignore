@@ -16,7 +16,8 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 **/.DS_Store
 
 # ./idea files to ignore
-**/.idea/workspace.xml **/.idea/tasks.xml
+**/.idea/workspace.xml 
+**/.idea/tasks.xml
 
 # Runtime data
 pids
