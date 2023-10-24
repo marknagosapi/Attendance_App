@@ -1,5 +1,5 @@
 from fastapi import FastAPI, responses, UploadFile, File
-from faceDetection import locateFaces
+from faceDetection import *
 
 app = FastAPI()
 
@@ -17,4 +17,12 @@ async def uploadImage(imageFile: UploadFile = File(...)):
 
   file = open("withBorders." + extention,mode="rb")
   return responses.StreamingResponse(file, media_type=imageFile.headers.values()[1], status_code=200)
+  
 
+@app.post("/learn_face")
+async def saveFace(name:str, imageFile: UploadFile = File(...)):
+  await learnFace(name, imageFile)
+
+@app.post("/check")
+async def asd(imageFile: UploadFile = File(...)):
+  return await getFaceData(imageFile)
