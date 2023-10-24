@@ -29,6 +29,15 @@
     
     "experiments": {
       "tsconfigPaths": true
+    },
+    
+    "permissions": {
+      "android": {
+        "permissions": ["CAMERA", "RECORD_AUDIO"]
+      },
+      "ios": {
+        "permissions": ["CAMERA", "AUDIO_RECORDING"]
+      }
     }
     
   }

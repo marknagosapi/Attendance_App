@@ -6,6 +6,9 @@ Dependencies:
     - react-native-gesture-handler
     - react-native-screens
     - react-native-switch-selector
+    - expo-camera
+    - expo-screen-orientation
+    - @expo/vector-icons
 
 
 How To Run:

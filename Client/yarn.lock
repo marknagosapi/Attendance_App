@@ -3188,6 +3188,13 @@ expo-asset@~8.10.1:
     path-browserify "^1.0.0"
     url-parse "^1.5.9"
 
+expo-camera@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-13.6.0.tgz#a38537f474da4073ca4c19b5551e5178be5c899e"
+  integrity sha512-8lxK15D2tuEZom9bhDMMqNPW+5241Ak4wIup/ebh4JekgOtSQ/egbq7qDn2FCFi+5vPFKX4nRsvGOuzfuzvmZA==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-constants@~14.4.2:
   version "14.4.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-14.4.2.tgz#cac5e8b524069545739b8d8595ce96cc5be6578c"
@@ -3235,12 +3242,17 @@ expo-modules-core@1.5.11:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-screen-orientation@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/expo-screen-orientation/-/expo-screen-orientation-6.2.0.tgz#13f9a94e64a58b229d88285dc342c4aed8b19cc5"
+  integrity sha512-1uIIe5ACKlRu/vUccBOSXj1ZxQ38pn5MDsxdTqhlQDC637kfX5CTvaM2uYxRGV4S1PXdRrC+d/dvtE2xLQNAFQ==
+
 expo-status-bar@~1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.6.0.tgz#e79ffdb9a84d2e0ec9a0dc7392d9ab364fefa9cf"
   integrity sha512-e//Oi2WPdomMlMDD3skE4+1ZarKCJ/suvcB4Jo/nO427niKug5oppcPNYO+csR6y3ZglGuypS+3pp/hJ+Xp6fQ==
 
-expo@~49.0.15:
+expo@^49.0.16:
   version "49.0.16"
   resolved "https://registry.yarnpkg.com/expo/-/expo-49.0.16.tgz#60399f25f141d649707cef928b90305057000923"
   integrity sha512-1TcpWUEpzCQ7FjtwO1j+l/UvNgrEDZWfQm4kOo9eVZVDNKavYo+KL4XXHeljSAOOGhI/plmpD3bvhfYoywOAFQ==
@@ -3786,6 +3798,11 @@ ini@~1.3.0:
   version "1.3.8"
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
+
+install@^0.13.0:
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/install/-/install-0.13.0.tgz#6af6e9da9dd0987de2ab420f78e60d9c17260776"
+  integrity sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==
 
 internal-ip@4.3.0:
   version "4.3.0"
