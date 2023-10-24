@@ -2,7 +2,11 @@ import React, { useRef } from 'react';
 import {TouchableOpacity, Animated, Easing, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 
-function SimpleRetakeButton({buttonFunction}){
+type reloadButtonProps = {
+  buttonFunction : Function
+}
+
+function ReloadButton(props: reloadButtonProps){
   const rotationValue = useRef(new Animated.Value(0)).current;
 
   const rotate = () => {
@@ -17,7 +21,7 @@ function SimpleRetakeButton({buttonFunction}){
   };
 
   const handleRetake = () => {
-       buttonFunction();
+       props.buttonFunction();
   };
 
   const spin = rotationValue.interpolate({
@@ -49,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SimpleRetakeButton
+export default ReloadButton

@@ -1,3 +1,5 @@
+import Colors from "@/constants/Colors";
+import Sizes from "@/constants/Sizes";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -5,7 +7,7 @@ export const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#F4F4F4',
+      backgroundColor: Colors.grayBackgroundColor
     },
     switchContainer: {
       flexDirection: 'column',
@@ -15,8 +17,8 @@ export const styles = StyleSheet.create({
     },
    
     registerButton: {
-      backgroundColor: '#2ECC71',
-      borderRadius: 15,
+      backgroundColor: Colors.usedGreenColor,
+      borderRadius: Sizes.defaultBorderRadius,
       paddingVertical:12,
       paddingHorizontal: 50,
       marginBottom: 10,

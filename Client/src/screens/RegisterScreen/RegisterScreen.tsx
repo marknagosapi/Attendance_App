@@ -3,6 +3,7 @@ import { View, Text, TextInput,TouchableOpacity } from 'react-native';
 import { NavigationProp} from '@react-navigation/native';
 import {styles} from './RegisterScreenStyle'
 import SwitchSelector from 'react-native-switch-selector';
+import Colors from '@/constants/Colors';
 
 type RegisterScreenProps = {
   navigation: NavigationProp<any>
@@ -50,7 +51,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
           { label: 'Teacher', value: 'teacher' },
         ]}
         initial={0}
-        buttonColor="#2ECC71"
+        buttonColor={Colors.usedGreenColor}
         textStyle={styles.switchText}
         selectedTextStyle={styles.selectedSwitchText}
         onPress={(value: string) => setSelectedRole(value)}

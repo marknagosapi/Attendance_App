@@ -1,3 +1,5 @@
+import Colors from "@/constants/Colors";
+import Sizes from "@/constants/Sizes";
 import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
 
@@ -50,7 +52,7 @@ export const styles = StyleSheet.create({
         height: 100,
         alignItems: 'center',
         marginTop: 350,
-        borderRadius: 20,
-        backgroundColor: '#2ECC71'
+        borderRadius: Sizes.defaultBorderRadius,
+        backgroundColor: Colors.usedGreenColor
     }
 });

@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { View, Text, TextInput, TouchableOpacity} from 'react-native';
+import { NavigationProp} from '@react-navigation/native';
 import {styles} from './LoginScreenStyle'
+
 type LoginScreenProps = {
   navigation: NavigationProp<any>
 }
 
 function LoginScreen(props: LoginScreenProps){
-  const navigation = useNavigation();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
