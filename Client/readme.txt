@@ -9,6 +9,7 @@ Dependencies:
     - expo-camera
     - expo-screen-orientation
     - @expo/vector-icons
+    - expo-av
 
 
 How To Run:

@@ -14,6 +14,12 @@ function LoginScreen(props: LoginScreenProps){
 
   const handleLogin = () => {
     // Add your login logic here
+    console.log(username);
+    console.log(password);
+    if(username == 'admin' && password == 'admin'){
+      console.log("OK")
+      props.navigation.replace('HomeScreen');
+    }
   };
 
   return (

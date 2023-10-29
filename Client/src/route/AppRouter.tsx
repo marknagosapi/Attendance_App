@@ -5,31 +5,65 @@ import LoginScreen from "@/screens/LoginScreen/LoginScreen";
 import SplashScreen from "@/screens/SplashScreen/SplashScreen";
 import CameraScreen from "@/screens/ProfessorScreens/CameraScreen/CameraScreen";
 import Colors from "@/constants/Colors";
+import YourScreen from "@/screens/ProfessorScreens/HomeScreen/HomeScreen";
+import Header from "@/components/Header";
+import ProfileDetailScreen from "@/screens/ProfessorScreens/ProfileDetailScreen/ProfilesDetailScreen";
 
+function AppRouter() {
+  const Stack = createNativeStackNavigator();
 
-function AppRouter(){
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="SplashScreen"
+        screenOptions={{
+          headerStyle: { backgroundColor: Colors.usedGreenColor },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
+          headerBackVisible: false,
+        }}
+      >
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{
+            title: "",
+            headerBackTitle: "",
+            headerBackVisible: false,
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={RegistrationScreen}
+          options={{ title: "Register" }}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ title: "Login" }}
+        />
 
-    const Stack = createNativeStackNavigator();
+        <Stack.Group>
+          <Stack.Screen
+            name="HomeScreen"
+            component={YourScreen}
+            options={{ header: Header }}
+          />
+          <Stack.Screen
+            name="ProfileDetailScreen"
+            component={ProfileDetailScreen}
+            options={{ header: Header }}
+          />
+          <Stack.Screen
+            name="CameraScreen"
+            component={CameraScreen}
+            options={{ title: "Camera", headerShown: false }}
+          />
+        </Stack.Group>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
-    return(
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerStyle: { backgroundColor: Colors.usedGreenColor}, headerTintColor: '#fff', headerTitleStyle: {fontWeight: 'bold'}, headerBackVisible: false }}>
-
-
-            <Stack.Screen name="SplashScreen" 
-                component={SplashScreen} 
-                options={{title:'', headerBackTitle:'', headerBackVisible: false}}
-            />
-                <Stack.Screen name="Register" component={RegistrationScreen} options={{title:'Register'}}/>
-                <Stack.Screen name="Login" component={LoginScreen} options={{title:'Login'}}/>
-            
-            <Stack.Group>
-                <Stack.Screen name="CameraScreen" component={CameraScreen} options={{title:'Camera', headerShown:false} } />
-            </Stack.Group>
-
-            </Stack.Navigator>
-        </NavigationContainer>
-    )
- }
- 
- export default AppRouter;
+export default AppRouter;
