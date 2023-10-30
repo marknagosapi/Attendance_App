@@ -73,6 +73,16 @@ function AppRouter() {
             options={{ title: "Camera", headerShown: false }}
           />
         </Stack.Group>
+
+        {/* Student Screens */}
+
+        <Stack.Group>
+          <Stack.Screen
+            name="HomeScreen"
+            component={""}
+            options={{ header: Header }}
+          />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
