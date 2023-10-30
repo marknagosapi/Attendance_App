@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity} from 'react-native';
-import { NavigationProp} from '@react-navigation/native';
 import {styles} from './LoginScreenStyle'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type LoginScreenProps = {
-  navigation: NavigationProp<any>
+  navigation: NativeStackNavigationProp<any>
 }
 
 function LoginScreen(props: LoginScreenProps){

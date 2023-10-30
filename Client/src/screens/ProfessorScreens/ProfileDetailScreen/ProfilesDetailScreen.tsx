@@ -1,17 +1,18 @@
-// ProfileDetailScreen.js
+// ProfileDetailScreen.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import Header from '@/components/Header';
 import {styles} from './ProfileDetailScreenStyle'
+import CustomButton from '@/components/CustomButton';
 const ProfileDetailScreen = () => {
-  const [username, setUsername] = useState('JohnDoe');
-  const [password, setPassword] = useState('********');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleSave = () => {
     // Implement saving changes to the user's profile
-    console.log('Username:', username);
-    console.log('Password:', password);
+
+
   };
 
   const handleImagePicker = () => {
@@ -34,22 +35,21 @@ const ProfileDetailScreen = () => {
         </TouchableOpacity>
         <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder="Current Username"
             value={username}
             onChangeText={(text) => setUsername(text)}
         />
         <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder="Current Password "
             secureTextEntry
             value={password}
             onChangeText={(text) => setPassword(text)}
         />
-        <Button title="Save Changes" onPress={handleSave} />
+         
+        <CustomButton title="Save Changes" onPress={handleSave}></CustomButton>
         </View>
     </View>
-  );
-  
+  ); 
 };
-
 export default ProfileDetailScreen;

@@ -8,6 +8,8 @@ import Colors from "@/constants/Colors";
 import YourScreen from "@/screens/ProfessorScreens/HomeScreen/HomeScreen";
 import Header from "@/components/Header";
 import ProfileDetailScreen from "@/screens/ProfessorScreens/ProfileDetailScreen/ProfilesDetailScreen";
+import ClassDetailScreen from "@/screens/ProfessorScreens/ClassDetailScreen/ClassDetailScreen";
+import ResultScreen from "@/screens/ProfessorScreens/ResultScreen/ResultScreen";
 
 function AppRouter() {
   const Stack = createNativeStackNavigator();
@@ -15,7 +17,7 @@ function AppRouter() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SplashScreen"
+        initialRouteName="ResultScreen"
         screenOptions={{
           headerStyle: { backgroundColor: Colors.usedGreenColor },
           headerTintColor: "#fff",
@@ -51,8 +53,18 @@ function AppRouter() {
             options={{ header: Header }}
           />
           <Stack.Screen
+            name="ClassDetailScreen"
+            component={ClassDetailScreen}
+            options={{ header: Header }}
+          />
+          <Stack.Screen
             name="ProfileDetailScreen"
             component={ProfileDetailScreen}
+            options={{ header: Header }}
+          />
+          <Stack.Screen
+            name="ResultScreen"
+            component={ResultScreen}
             options={{ header: Header }}
           />
           <Stack.Screen

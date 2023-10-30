@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View} from "react-native";
 import { styles } from "./SplashScreenStyle";
-import { AVPlaybackStatus, ResizeMode, Video } from "expo-av";
+import { AVPlaybackStatus, Video } from "expo-av";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 type SplashScreenPros = {
@@ -21,14 +21,6 @@ const SplashScreen = (props: SplashScreenPros) => {
 
   return (
     <View style={styles.container}>
-      {/* <Image
-        source={require('@/assets/images/hand_logo.png')} // Change the path to your image file
-        style={styles.image}
-      />
-      <Image
-        source={require('@/assets/images/present_logo.png')} // Change the path to your image file
-
-      /> */}
       <Video
         onPlaybackStatusUpdate={onPlaybackStatusUpdate}
         source={require("@/assets/videos/animation.mp4")}

@@ -20,7 +20,6 @@ export default function CameraScreen() {
   function handleImage(){
 
     console.log(image);
-
   }
 
   useEffect(() => {

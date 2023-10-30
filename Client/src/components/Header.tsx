@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 
   },
   title: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     color: Colors.whiteColor
   },
@@ -46,8 +46,6 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: Sizes.defaultBorderRadius,
     borderColor: Colors.whiteColor,
-
-    
   }  
  
 });

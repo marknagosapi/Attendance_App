@@ -10,6 +10,7 @@ Dependencies:
     - expo-screen-orientation
     - @expo/vector-icons
     - expo-av
+    - react-native-modal
 
 
 How To Run:

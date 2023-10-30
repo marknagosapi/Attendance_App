@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput,TouchableOpacity } from 'react-native';
-import { NavigationProp} from '@react-navigation/native';
 import {styles} from './RegisterScreenStyle'
-import SwitchSelector from 'react-native-switch-selector';
+import { SwitchSelector } from 'react-native-switch-selector'
 import Colors from '@/constants/Colors';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 
 type RegisterScreenProps = {
-  navigation: NavigationProp<any>
+  navigation: NativeStackNavigationProp<any>
 }
-
 
 const RegistrationScreen = (props: RegisterScreenProps) => {
   const [username, setUsername] = useState('');
@@ -57,10 +57,11 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
         onPress={(value: string) => setSelectedRole(value)}
       />
       </View>
+
       <TouchableOpacity onPress={handleRegistration} style={styles.registerButton}>
         <Text style={styles.registerButtonText}>Register</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() =>  {props.navigation.navigate("Login"); console.log("Opened Login Screen")}}>
+      <TouchableOpacity onPress={() =>  {props.navigation.replace("Login"); console.log("Opened Login Screen")}}>
         <Text style={styles.loginLink}>Already have an account? <Text style={styles.loginLinkText}> Login here </Text></Text>
       </TouchableOpacity>
     </View>
