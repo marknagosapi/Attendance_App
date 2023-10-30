@@ -1,4 +1,4 @@
-Dependencies:
+Dependencies: (yarn add)
     - react-native-safe-area-context
     - react-native-elements
     - @react-navigation/native
