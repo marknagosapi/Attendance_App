@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, ImageBackground} from 'react-native';
+import { Text, View, TouchableOpacity, Button, ImageBackground} from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ScreenOrientation from 'expo-screen-orientation'
 import {styles} from "./CameraScreenStyle"
 import CoolReloadButton from '@/components/ReloadButton';
 
-export default function CameraScreen() {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+const CameraScreen: React.FC = () => {
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(false);
   const [camera, setCamera] = useState(null);
   const [image, setImage] = useState(null);
 
@@ -31,10 +31,13 @@ export default function CameraScreen() {
       }
 
     async function cameraHandler(){
+        console.log("Asking for Camera Persmission...")
         const cameraStatus = await Camera.requestCameraPermissionsAsync();
-        setHasCameraPermission(cameraStatus.status === 'granted');
+        const access = cameraStatus.status === 'granted';
+        setHasCameraPermission(access);
 
     }
+   
         changeOrientation();
         cameraHandler();
         
@@ -52,12 +55,22 @@ export default function CameraScreen() {
         }
     }
 
+    
     // if user give no permission
   if (hasCameraPermission === false) {
     return (<View style={styles.noPermissionContainer}>
             <Text style={styles.noPermissionText}>Give Permission 4 Camera Usage</Text>
-    </View>
+            <Button
+          title="Request Camera Permission"
+          onPress={async () => {
+            const { status } = await Camera.requestCameraPermissionsAsync();
+            setHasCameraPermission(status === 'granted');
+          }}
+        />
+      </View>
+
     )
+  
   }
 
   // is user gave permission for camera usage
@@ -103,3 +116,5 @@ export default function CameraScreen() {
     
   );
 }
+
+export default CameraScreen;

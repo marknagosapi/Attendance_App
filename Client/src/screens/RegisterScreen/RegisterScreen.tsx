@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput,TouchableOpacity } from 'react-native';
 import {styles} from './RegisterScreenStyle'
-import { SwitchSelector } from 'react-native-switch-selector'
+import SwitchSelector from "react-native-switch-selector";
 import Colors from '@/constants/Colors';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 

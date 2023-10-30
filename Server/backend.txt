@@ -1,2 +1,0 @@
-This is the backend folder.
-Python & Django Framework
