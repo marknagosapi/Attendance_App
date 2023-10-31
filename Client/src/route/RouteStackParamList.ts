@@ -7,15 +7,19 @@ type ProfessorRootStackParamList = {
 
   HomeScreen:{
       
-  }
+  };
 
   CameraScreen:{
 
-  }
+  };
 
   ProfileDetailScreen:{
 
-  }
+  };
+
+  ResultScreen:{
+
+  };
 
   // Define other screen params here
 };

@@ -4,6 +4,8 @@ import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import Header from '@/components/Header';
 import {styles} from './ProfileDetailScreenStyle'
 import CustomButton from '@/components/CustomButton';
+
+
 const ProfileDetailScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
