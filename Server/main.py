@@ -1,28 +1,36 @@
 from fastapi import FastAPI, responses, UploadFile, File
 from faceDetection import *
+from database import uploadNewUser
+from pydantic import BaseModel
 
 app = FastAPI()
 
-# return last picture with boxes
-@app.get("/")
-def getImage():
-  file = open("withBorders.jpeg",mode="rb")
-  return responses.StreamingResponse(file, media_type="image/jpg",status_code=200)
-
-# get an image from body and return back with the faces boxed in
-@app.post("/")
-async def uploadImage(imageFile: UploadFile = File(...)):
-  extention = imageFile.headers.values()[1][6:]
-  file = await locateFaces(imageFile,extention)
-
-  file = open("withBorders." + extention,mode="rb")
-  return responses.StreamingResponse(file, media_type=imageFile.headers.values()[1], status_code=200)
-  
-
 @app.post("/learn_face")
-async def saveFace(name:str, imageFile: UploadFile = File(...)):
-  await learnFace(name, imageFile)
+async def saveFace(userId: str, imageFile: UploadFile = File(...)):
+  await learnFace(userId, imageFile)
 
 @app.post("/check")
-async def asd(imageFile: UploadFile = File(...)):
+async def check(imageFile: UploadFile = File(...)):
   return await getFaceData(imageFile)
+
+
+class registerBody(BaseModel):
+  userName: str
+  password: str
+  email: str
+  userType: str
+
+@app.post("/register")
+def register(regBody: registerBody):
+  return uploadNewUser(regBody)
+
+
+class loginBody(BaseModel):
+  userName: str
+  password: str
+
+@app.post("/login")
+def login(loginBody: loginBody):
+  userId = getUserByNameAndPassword(loginBody.userName, loginBody.password)
+
+  return userId

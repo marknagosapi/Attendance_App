@@ -7,10 +7,37 @@ pip install firebase_admin
 
 
 start backend:
-uvicorn main:app --workers 4 --host 0.0.0.0 (for release)
-uvicorn main:app --reload (for developing)
+uvicorn main:app --reload
 http://127.0.0.1:8000
 
 
-Image upload needed for come in HTTP "form" and the extra information in the link
-ex. http://127.0.0.1:8000/learn_face?name=UserName
+Image upload needed for come in HTTP "form"
+
+Endpoints:
+POST /login 
+    body:
+        {
+        "userName": userName,
+        "password": password
+        }
+    returns: userId if successful, else returns null
+
+POST /register
+    body:
+        {
+        "userName": "string",
+        "password": "string",
+        "email": "string",
+        "userType": "string"
+        }
+    returns: boolean if successful or not
+
+POST /check
+    body: 
+        Form: Image
+    returns: userId if successful, else returns null
+
+POST /learn_face/learn_face?name=userId
+    body:
+        From: Image
+    returns: nothing
