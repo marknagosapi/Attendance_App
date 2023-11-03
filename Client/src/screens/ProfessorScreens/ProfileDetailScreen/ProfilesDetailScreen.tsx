@@ -6,7 +6,6 @@ import {styles} from './ProfileDetailScreenStyle'
 import CustomButton from '@/components/CustomButton';
 
 
-
 const ProfileDetailScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

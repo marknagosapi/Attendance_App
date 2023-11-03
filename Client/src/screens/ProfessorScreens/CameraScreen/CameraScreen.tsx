@@ -4,8 +4,17 @@ import { Camera } from 'expo-camera';
 import * as ScreenOrientation from 'expo-screen-orientation'
 import {styles} from "./CameraScreenStyle"
 import CoolReloadButton from '@/components/ReloadButton';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 
-const CameraScreen: React.FC = () => {
+type CameraScreenProps = {
+  navigation: NativeStackNavigationProp<
+    ProfessorRootStackParamList,
+    "CameraScreen"
+  >;
+};
+
+const CameraScreen = (props: CameraScreenProps) => {
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(false);
   const [camera, setCamera] = useState(null);
   const [image, setImage] = useState(null);
@@ -18,8 +27,7 @@ const CameraScreen: React.FC = () => {
   }
 
   function handleImage(){
-
-    console.log(image);
+    props.navigation.replace('ResultScreen',{});
   }
 
   useEffect(() => {
@@ -86,8 +94,6 @@ const CameraScreen: React.FC = () => {
 
                 </View>
                <View style={styles.container}>
-                   
-                   
                    
                     <TouchableOpacity
                         style={styles.takeAttendanceButton}

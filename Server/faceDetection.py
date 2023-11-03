@@ -1,7 +1,6 @@
 import face_recognition
 from PIL import Image, ImageDraw
-from database import uploadFace, getStudents
-from numpy import array
+from database import *
 import io
 
 # get a file and the extention and save the file with the faces boxed in
@@ -22,14 +21,14 @@ async def locateFaces(imageFile,extention: str):
     originalImage.save("images/withBorders." + extention)
 
 
-async def learnFace(name, imageFile):
+async def learnFace(userId, imageFile):
     imageBytes = await imageFile.read()
     imageBytes = io.BytesIO(imageBytes)
 
     image = face_recognition.load_image_file(imageBytes)
     imageEncoded = face_recognition.face_encodings(image)[0]
     
-    uploadFace(name,imageEncoded.tolist())
+    uploadFace(userId,imageEncoded.tolist())
     
 
 async def getFaceData(imageFile):
@@ -39,13 +38,13 @@ async def getFaceData(imageFile):
     image = face_recognition.load_image_file(imageBytes)
     imageEncoded = face_recognition.face_encodings(image)
 
-    students = getStudents()
-    for student in students:
-        for face in imageEncoded:
-            wichFace = face_recognition.compare_faces([array(student.to_dict()["encodedFace"])],face)
-            for isIn in wichFace:
-                if isIn: return student.to_dict()["userName"]
-                
-    uploadFace(None, imageEncoded[0].tolist())
+    students = getStudentsFacesAndIds()
+    
+    for face in imageEncoded:
+        wichFace = face_recognition.compare_faces(students["faces"],face)
+        for isIn, id in zip(wichFace,students["ids"]):
+            if isIn: return id
+    return None                
+    
 
     
