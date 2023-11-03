@@ -20,4 +20,26 @@ type ProfessorRootStackParamList = {
   // Define other screen params here
 };
 
-export { ProfessorRootStackParamList };
+
+
+// Student Root
+
+type StudentRootStackParamList = {
+
+  StudentHomeScreen:{
+      
+  }
+
+  
+  StudentProfileScreen:{
+
+  }
+
+  CourseDetailScreen:{
+    courseName: string;
+  }
+
+  // Define other screen params here
+};
+
+export { StudentRootStackParamList, ProfessorRootStackParamList };
