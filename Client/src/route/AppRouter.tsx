@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import RegistrationScreen from "@/screens/RegisterScreen/RegisterScreen";
-import LoginScreen from "@/screens/LoginScreen/LoginScreen";
-import SplashScreen from "@/screens/SplashScreen/SplashScreen";
+import RegistrationScreen from "@/screens/AuthScreens/RegisterScreen/RegisterScreen";
+import LoginScreen from "@/screens/AuthScreens/LoginScreen/LoginScreen";
+import SplashScreen from "@/screens/AuthScreens/SplashScreen/SplashScreen";
 import CameraScreen from "@/screens/ProfessorScreens/CameraScreen/CameraScreen";
 import Colors from "@/constants/Colors";
 import YourScreen from "@/screens/ProfessorScreens/HomeScreen/HomeScreen";
@@ -20,7 +20,7 @@ function AppRouter() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="StudentHomeScreen"
+        initialRouteName="HomeScreen"
         screenOptions={{
           headerStyle: { backgroundColor: Colors.usedGreenColor },
           headerTintColor: "#fff",

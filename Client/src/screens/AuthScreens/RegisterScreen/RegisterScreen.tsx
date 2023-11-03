@@ -100,7 +100,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
         }}
       >
         <Text style={styles.loginLink}>
-          Already have an account?{" "}
+          Already have an account?
           <Text style={styles.loginLinkText}> Login here </Text>
         </Text>
       </TouchableOpacity>
