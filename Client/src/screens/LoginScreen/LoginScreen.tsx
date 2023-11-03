@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity} from 'react-native';
 import {styles} from './LoginScreenStyle'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '@/store/LoginSlice';
+import {RootState} from '@/store/store'
+import { showAlert } from '@/Utils/function';
+import {BACKEND_URL} from '@/Utils/placeholders'
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<any>
@@ -9,17 +14,44 @@ type LoginScreenProps = {
 
 function LoginScreen(props: LoginScreenProps){
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const userId = useSelector((state: RootState) => state.auth.userId);
 
-  const handleLogin = () => {
-    // Add your login logic here
-    console.log(username);
-    console.log(password);
-    if(username == 'admin' && password == 'admin'){
-      console.log("OK")
-      props.navigation.replace('HomeScreen');
+  const [userName, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const handleLogin = async () => {
+
+    if( userName == '' || password == '' ){
+      showAlert("Missing Field Data!")
+      return
     }
+    await onLogin();  
+    if(userId){
+      props.navigation.replace("HomeScreen");
+    } else {
+      showAlert("This User Does Not Exist")
+    }
+  };
+
+  const onLogin = async () => {
+
+    const response = await fetch(BACKEND_URL+"/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userName, password }),
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      if (data) {
+        dispatch(setUser({userId: data, error: null}))
+      } else {
+        dispatch(setUser({userId: null, error:data }))
+      }
+    } 
   };
 
   return (
@@ -39,7 +71,7 @@ function LoginScreen(props: LoginScreenProps){
       <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
         <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => { props.navigation.navigate("Register"); console.log("Opened Login Screen")} }>
+      <TouchableOpacity onPress={() => { props.navigation.navigate("Register"); console.log("Opened Register Screen")} }>
         <Text style={styles.registerLink}>Don't have an account? <Text style={styles.registerLinkText}>Register here</Text></Text>
       </TouchableOpacity>
     </View>

@@ -27,8 +27,6 @@ const CameraScreen = (props: CameraScreenProps) => {
   }
 
   function handleImage(){
-
-    console.log(image);
     props.navigation.replace('ResultScreen',{});
   }
 
@@ -96,8 +94,6 @@ const CameraScreen = (props: CameraScreenProps) => {
 
                 </View>
                <View style={styles.container}>
-                   
-                   
                    
                     <TouchableOpacity
                         style={styles.takeAttendanceButton}
