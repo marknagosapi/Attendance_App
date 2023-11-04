@@ -1,7 +1,8 @@
 import face_recognition
 from PIL import Image, ImageDraw
-from database import *
+from database import uploadFace, getStudentsFacesAndIds, getUserById
 import io
+
 
 # get a file and the extention and save the file with the faces boxed in
 async def locateFaces(imageFile,extention: str):
@@ -26,24 +27,30 @@ async def learnFace(userId, imageFile):
     imageBytes = io.BytesIO(imageBytes)
 
     image = face_recognition.load_image_file(imageBytes)
-    imageEncoded = face_recognition.face_encodings(image)[0]
+    imageEncoded = face_recognition.face_encodings(image)
+
+    if len(imageEncoded) > 1: return "More than one face"
+    if len(imageEncoded) == 0: return "Face not found"
     
-    uploadFace(userId,imageEncoded.tolist())
+    return uploadFace(userId,imageEncoded[0].tolist())
     
 
-async def getFaceData(imageFile):
+async def getFaceData(imageFile,classId):
     imageBytes = await imageFile.read()
     imageBytes = io.BytesIO(imageBytes)
 
     image = face_recognition.load_image_file(imageBytes)
     imageEncoded = face_recognition.face_encodings(image)
 
-    students = getStudentsFacesAndIds()
-    
+    students = getStudentsFacesAndIds(classId)
+  
     for face in imageEncoded:
         wichFace = face_recognition.compare_faces(students["faces"],face)
         for isIn, id in zip(wichFace,students["ids"]):
-            if isIn: return id
+            if isIn: 
+                user = getUserById(id)
+                user["userId"] = id
+                return user
     return None                
     
 

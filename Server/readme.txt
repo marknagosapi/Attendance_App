@@ -7,7 +7,8 @@ pip install firebase_admin
 
 
 start backend:
-uvicorn main:app --reload
+uvicorn main:app --workers 4 --host 0.0.0.0 (for release)
+uvicorn main:app --reload (for developing)
 http://127.0.0.1:8000
 
 
@@ -20,7 +21,7 @@ POST /login
         "userName": userName,
         "password": password
         }
-    returns: userId if successful, else returns null
+    returns: user if successful, else returns null
 
 POST /register
     body:
@@ -30,14 +31,37 @@ POST /register
         "email": "string",
         "userType": "string"
         }
-    returns: boolean if successful or not
+    returns: user if successful, else returns null
 
 POST /check
     body: 
         Form: Image
-    returns: userId if successful, else returns null
+    returns: user if successful, else returns null
 
-POST /learn_face/learn_face?name=userId
+POST /learn_face?name=userId
     body:
-        From: Image
-    returns: nothing
+        Form: Image
+    returns: nothing if successful or "User not exists", "More than one face", "Face not found" 
+
+POST /create_class
+    body:
+        {
+        "teacherIds": [
+            "string"
+        ],
+        "className": "string",
+        "majors": [
+            "string"
+        ],
+        "maxAttendance": null -> 14 | int
+        }
+    returns: boolean if successful or not
+
+GET /get_class?classId=classId
+    returns class if successful, else null
+
+GET /get_classes?userId=userId
+    returns list of classes where the user it in
+
+GET /get_class_students?classId=classId
+    returns list of students who is in the class
