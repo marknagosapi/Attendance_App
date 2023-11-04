@@ -1,33 +1,28 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-interface ClassCardProps {
+interface CourseCardProps {
 
-    classData: ClassData,
-    onPressed: (className: string) => void,
+    courseData: CourseData,
+    onPressed: (courseName: string) => void,
     onDelete: (id: number) => void
 
 }
-
-const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
-  const currentClass = props.classData
+const CourseCard: React.FC<CourseCardProps> = (props: CourseCardProps) => {
+  const currentCourse = props.courseData
 
   const handleDelete = () => {
-    props.onDelete(currentClass.id); // Trigger the delete action with the class ID
+    props.onDelete(currentCourse.id); // Trigger the delete action with the course ID
   };
 
   const handlePressOnClass = () => {
-      props.onPressed(currentClass.name);
+      props.onPressed(currentCourse.name);
   }
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePressOnClass}>
       <View style={styles.leftContent}>
-        <Text style={styles.name}>{currentClass.name}</Text>
-        <Text style={styles.major}>{currentClass.major}</Text>
-        <Text style={styles.attendanceRequired}>
-          Attendance Required: {currentClass.attendanceRequired}
-        </Text>
+        <Text style={styles.name}>{currentCourse.name}</Text>
       </View>
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
         <Text style={styles.deleteButtonText}>X</Text>
@@ -66,12 +61,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  major: {
-    fontSize: 16,
-  },
-  attendanceRequired: {
-    fontSize: 14,
-  },
+//   major: {
+//     fontSize: 16,
+//   },
+//   attendanceRequired: {
+//     fontSize: 14,
+//   },
 });
 
-export default ClassCard;
+export default CourseCard;

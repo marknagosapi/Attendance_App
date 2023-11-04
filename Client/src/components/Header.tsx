@@ -10,16 +10,19 @@ type HeaderProps = {
 
     title: string,
     userAvatar?: string,
-    onPress?: () => void
+    onPress?: () => void,
+    goesBack?: boolean
 
 }
 
 const Header = (props: HeaderProps) => {
   const navigation = useNavigation();
-
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>{props.title}</Text>
+      <View style={styles.headerRowContainer}>
+        {props.goesBack && <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backArrow}>{"<"}</Text></TouchableOpacity>}
+        <Text style={styles.title}>{props.title}</Text>
+      </View>
       <TouchableOpacity onPress={props.onPress}>
         <Image source={{ uri: props.userAvatar }} style={styles.avatar} />
       </TouchableOpacity>
@@ -39,6 +42,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: 'bold',
+    color: Colors.whiteColor
+  },
+
+  headerRowContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+  
+  },
+
+  backArrow:{
+    fontSize: 30,
+    fontWeight: 'bold',
+    padding: 5,
     color: Colors.whiteColor
   },
   avatar: {

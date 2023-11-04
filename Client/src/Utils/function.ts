@@ -1,4 +1,4 @@
-
+  import { Alert } from "react-native";
   export function generateRandomStudent() {
     const names = [
       "John",
@@ -33,3 +33,11 @@
       attendance: randomAttendance,
     };
   }
+
+
+export const showAlert = (msg: string) =>{
+  Alert.alert(
+    "[ERROR]\n"+
+     msg
+  )
+}

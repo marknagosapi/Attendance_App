@@ -1,8 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import RegistrationScreen from "@/screens/RegisterScreen/RegisterScreen";
-import LoginScreen from "@/screens/LoginScreen/LoginScreen";
-import SplashScreen from "@/screens/SplashScreen/SplashScreen";
+import RegistrationScreen from "@/screens/AuthScreens/RegisterScreen/RegisterScreen";
+import LoginScreen from "@/screens/AuthScreens/LoginScreen/LoginScreen";
+import SplashScreen from "@/screens/AuthScreens/SplashScreen/SplashScreen";
 import CameraScreen from "@/screens/ProfessorScreens/CameraScreen/CameraScreen";
 import Colors from "@/constants/Colors";
 import YourScreen from "@/screens/ProfessorScreens/HomeScreen/HomeScreen";
@@ -10,6 +10,9 @@ import Header from "@/components/Header";
 import ProfileDetailScreen from "@/screens/ProfessorScreens/ProfileDetailScreen/ProfilesDetailScreen";
 import ClassDetailScreen from "@/screens/ProfessorScreens/ClassDetailScreen/ClassDetailScreen";
 import ResultScreen from "@/screens/ProfessorScreens/ResultScreen/ResultScreen";
+import StudentHomeScreen from "@/screens/StudentScreens/StudentHomeScreen/StudentHomeScreen";
+import StudentProfileScreen from "@/screens/StudentScreens/StudentProfileScreen/StudentProfileScreen";
+import CourseDetailScreen from "@/screens/StudentScreens/CourseDetailScreen/CourseDetailScreen";
 
 function AppRouter() {
   const Stack = createNativeStackNavigator();
@@ -17,7 +20,7 @@ function AppRouter() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="SplashSreen"
+        initialRouteName="HomeScreen"
         screenOptions={{
           headerStyle: { backgroundColor: Colors.usedGreenColor },
           headerTintColor: "#fff",
@@ -78,10 +81,21 @@ function AppRouter() {
 
         <Stack.Group>
           <Stack.Screen
-            name="HomeScreen"
-            component={""}
+            name="StudentHomeScreen"
+            component={StudentHomeScreen}
             options={{ header: Header }}
           />
+
+        <Stack.Screen
+            name="StudentProfileScreen"
+            component={StudentProfileScreen}
+            options={{ header: Header }}
+        />
+        <Stack.Screen
+            name="CourseDetailScreen"
+            component={CourseDetailScreen}
+            options={{ header: Header }}
+        />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
