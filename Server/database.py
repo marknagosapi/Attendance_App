@@ -1,9 +1,9 @@
+import random, string
 import firebase_admin
 from firebase_admin import credentials, firestore 
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
-from google.cloud.firestore_v1.field_path import FieldPath
 
 cred = credentials.Certificate("db_key.json")
 firebase_admin.initialize_app(cred)
@@ -23,18 +23,22 @@ def uploadFace(userId,encodedFace:list):
     refFaces.document(userId).set(data)
 
 def getStudentsFacesAndIds(classId):
-    faces = []
     ids = []
+    faces = []
+    withNoFaces = []
 
     for user in refClasses.document(classId).collection("students").stream():
-        ids.append(user.id)
         userFace = refFaces.document(user.id).get().to_dict()
-        if userFace == None: continue
-        faces.append(userFace["encodedFace"])
+        if userFace.get("encodedFace",None) == None:
+            withNoFaces.append(user.id)
+            continue
+        ids.append(user.id)
+        faces.append(userFace.get("encodedFace"))
 
     return {
         "ids": ids,
-        "faces": faces
+        "faces": faces,
+        "restIds": withNoFaces
     }
 
 def getUserById(id: str):
@@ -52,19 +56,23 @@ def uploadNewUser(user):
 
     isUserExists = len(refUsers.where(filter = composite_filter).get()) != 0
 
-    if isUserExists: return None
+    if isUserExists: return False
 
     userId = refUsers.add(user)[1].id
 
+    user = refUsers.document(userId).get().to_dict()
+    user["userId"] = userId
+
     if user["userType"] == "teacher": 
         refUsers.document(userId).update({"calsses": []})
-        return refUsers.document(userId)
+        user["classes"] = []
+        return user
 
     # Add student to classes
     for refClass in refClasses.where(filter= FieldFilter("majors", "array_contains", user["major"])).get():
         refClasses.document(refClass.id).collection("students").document(userId).set({"attendance": 0})
 
-    return refUsers.document(userId)
+    return user
 
 def getUserByNameAndPassword(email, password):
     compositeFilter = BaseCompositeFilter(
@@ -94,6 +102,13 @@ def addNewClass(classBody):
         ]
     )
 
+    classCode = "".join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(6))
+
+    while len(refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()) != 0:
+        classCode = "".join(random.choice(string.ascii_uppercase + string.ascii_lowercase + string.digits) for _ in range(6))
+
+    classBody["classCode"] = classCode
+
     classId = refClasses.add(classBody)[1].id
 
     for student in refUsers.where(filter= compositeFilter).stream():
@@ -107,9 +122,9 @@ def getUserClasses(userId):
     classes = []
 
     if user["userType"] == "teacher":
-        for refClass in refClasses.where(filter= FieldFilter("teacherIds", "array_contains", userId)).stream():
+        for refClass in refClasses.where(filter= FieldFilter("teacherId", "==", userId)).stream():
             Class = refClass.to_dict()
-            del Class["teacherIds"]
+            del Class["teacherId"]
             Class["classId"] = refClass.id
             classes.append(Class)
         return classes
@@ -125,8 +140,8 @@ def getUserClasses(userId):
 
     return classes
     
-
-def addStudentToClass(classId,studentId):
+def addStudentToClass(classCode,studentId):
+    classId = refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()[0].id 
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
 
 def addAttendaceForClass(classId,studentIds:list):
@@ -147,3 +162,7 @@ def getClassStudents(classId):
         users.append(refUser)
     
     return users
+
+def asd():
+
+    return None

@@ -33,11 +33,13 @@ POST /register
         }
     returns: user if successful, else returns null
 
-POST /check
+Check attendance in the given class
+POST /check?classId=classId
     body: 
         Form: Image
-    returns: user if successful, else returns null
+    returns: list of user with a field that is present or not
 
+learn the face of the given user
 POST /learn_face?name=userId
     body:
         Form: Image
@@ -61,7 +63,7 @@ GET /get_class?classId=classId
     returns class if successful, else null
 
 GET /get_classes?userId=userId
-    returns list of classes where the user it in
+    returns list of classes where the user its in
 
 GET /get_class_students?classId=classId
     returns list of students who is in the class
