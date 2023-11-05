@@ -1,3 +1,4 @@
+import Colors from "@/constants/Colors";
 import Sizes from "@/constants/Sizes";
 import { StyleSheet } from "react-native";
 
@@ -29,7 +30,24 @@ export const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10,
       },
-  
+      headerText: {
+        fontSize: 20,
+        marginBottom: 10,
+        fontWeight: 'bold',
+        color: Colors.whiteColor
+      },
+      checkBoxText: {
+        fontSize: 14,
+        color: Colors.whiteColor,
+        fontWeight: 'bold',
+      },
+      checkBoxContainer: {
+        backgroundColor: 'transparent',
+        borderWidth: 0
+      },
+      selectedMajorsText: {
+        marginTop: 10,
+      },
   });
 
   export const modalStyles = StyleSheet.create({
@@ -77,6 +95,7 @@ export const styles = StyleSheet.create({
       color: '#2ECC71',
       fontWeight: 'bold',
     },
+    
   });
   
   

@@ -58,4 +58,39 @@ export const styles = StyleSheet.create({
     loginLinkText: {
      fontWeight: 'bold',
     },
+    labelText: {
+      paddingTop:20,
+      fontSize: 20,
+      marginBottom: 10,
+    },
+    dropdownButton: {
+      width: 200,
+      height: 40,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'white',
+    },
+    dropdownButtonText: {
+      fontSize: 16,
+      color: 'black',
+    },
+    dropdownStyle: {
+      width: 200,
+      height: 180,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 5,
+    },
+    dropdownItemText: {
+      fontSize: 16,
+      color: 'black',
+      backgroundColor: 'white',
+    },
+    selectedMajorText: {
+      fontSize: 18,
+      marginTop: 10,
+    },
   });

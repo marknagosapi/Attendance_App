@@ -1,6 +1,6 @@
  type ClassData = {
-  id: number,
-  name: string;
-  major: string;
-  attendanceRequired: number;
+  classId: string,
+  className: string;
+  majors: string[];
+  maxAttendance: number;
 }

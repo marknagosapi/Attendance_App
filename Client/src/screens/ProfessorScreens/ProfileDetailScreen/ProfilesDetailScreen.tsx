@@ -1,20 +1,34 @@
 // ProfileDetailScreen.tsx
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import Header from '@/components/Header';
 import {styles} from './ProfileDetailScreenStyle'
 import CustomButton from '@/components/CustomButton';
 import * as ImagePicker from 'expo-image-picker';
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 
 const ProfileDetailScreen = () => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState<string | null>('');
   const [password, setPassword] = useState('');
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const userName = useSelector((state: RootState) => state.auth.userName);
+
+
+  
+  useEffect(() => {
+    setUsername(userName)
+  }, []);
 
   const handleSave = () => {
+  
+    // save changes to the database
+    // check if user did changed this field
+    if(username != userName){
 
+      // backend stuff
 
-    
+    }
   };
 
   const handleImagePicker = async () => {

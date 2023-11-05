@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,8 +13,12 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
 import { generateRandomStudent } from "@/Utils/function";
-import { userAvatar } from "@/Utils/placeholders";
 import ClassCard from "@/components/ClassCard";
+import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
+import { CheckBox } from "react-native-elements";
+import { MAJORS } from "@/Utils/placeholders";
+import { RootState } from "@/store/store";
+import { useSelector } from "react-redux";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -24,51 +28,79 @@ type HomeScreenProps = {
 };
 
 const HomeScreen = (props: HomeScreenProps) => {
+  // redux data
+  const teacherID = useSelector((state: RootState) => state.auth.userId);
   const [isModalVisible, setModalVisible] = useState(false);
   const [classes, setClasses] = useState<ClassData[]>([]);
+  const teacherIds = [teacherID, "0242"]; // amig lajos kicsereli a backendben
 
+  // screen data
   const [className, setClassName] = useState("");
-  const [classMajor, setClassMajor] = useState("");
-  const [minimumClassAttendance, setMinimumClassAttendance] = useState(0);
-
-  const idCounter = useRef(1);
+  const [majors, setSelectedMajors] = useState<string[]>([]);
+  const [maxAttendance, setMinimumClassAttendance] = useState(0);
 
   const toggleModal = () => {
+    setClassName("");
+    setSelectedMajors([]);
+    setMinimumClassAttendance(0);
     setModalVisible(!isModalVisible);
   };
 
-  const onDeleteClass = (idToDelete: number) => {
-    // Use the filter method to create a new array with the class removed
-    const updatedClasses = classes.filter(
-      (classItem) => classItem.id !== idToDelete
-    );
-
-    // Update the state with the new list of classes
-    setClasses(updatedClasses);
+  const onDeleteClass = (idToDelete: string) => {
+    console.log("onDeleteClass");
   };
 
-  const handleAddClass = () => {
-    console.log(className, classMajor, minimumClassAttendance);
-    // Validation
-    if (className == "" || classMajor == "" || isNaN(minimumClassAttendance)) {
-      // Handle validation error (e.g., display an error message)
+  // Function to get classes by teacherIds
+  const getClasses = () => {
+    fetch(BACKEND_URL + "/get_classes?userId=" + teacherID, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setClasses(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  };
+
+  useEffect(() => {
+    getClasses();
+  }, []);
+
+  const toggleMajor = (major: string) => {
+    if (majors.includes(major)) {
+      setSelectedMajors(majors.filter((m) => m !== major));
+    } else {
+      setSelectedMajors([...majors, major]);
+    }
+  };
+
+  const createClass = () => {
+    if (className == "" || majors.length <= 0 || isNaN(maxAttendance)) {
       alert("Please fill in all required fields.");
       return;
     }
+    console.log(majors);
+    fetch(BACKEND_URL + "/create_class", {
+      method: "POST",
+      body: JSON.stringify({ teacherIds, className, majors, maxAttendance }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Class created:", data);
+      })
+      .catch((error) => {
+        console.error("Error creating class:", error);
+      });
 
-    // Create a new class object with the entered data
-    const newClass: ClassData = {
-      id: idCounter.current,
-      name: className,
-      major: classMajor,
-      attendanceRequired: minimumClassAttendance,
-    };
-
-    idCounter.current++;
-    // Add the new class to your data or state
-    setClasses([...classes, newClass]);
-
-    // Clear the input fields and close the modal
     toggleModal();
   };
 
@@ -84,30 +116,31 @@ const HomeScreen = (props: HomeScreenProps) => {
         <Text style={modalStyles.title}>New Class</Text>
         <TextInput
           placeholder="Class Name"
-          placeholderTextColor={'#888'}
+          placeholderTextColor={"#888"}
           style={modalStyles.input}
           value={className}
           onChangeText={(text) => setClassName(text)}
         />
-        <TextInput
-          placeholder="Major"
-          placeholderTextColor={'#888'}
-          style={modalStyles.input}
-          value={classMajor}
-          onChangeText={(text) => setClassMajor(text)}
-        />
+        <Text style={styles.headerText}>Select Majors:</Text>
+        {MAJORS.map((major) => (
+          <CheckBox
+            textStyle={styles.checkBoxText}
+            containerStyle={styles.checkBoxContainer}
+            key={major.value}
+            title={major.label}
+            checked={majors.includes(major.value)}
+            onPress={() => toggleMajor(major.value)}
+          />
+        ))}
         <TextInput
           placeholder="Attendance Required"
-          placeholderTextColor={'#888'}
+          placeholderTextColor={"#888"}
           keyboardType="numeric"
           style={modalStyles.input}
           onChangeText={(text) => setMinimumClassAttendance(parseInt(text))}
         />
         <View style={modalStyles.buttonHolder}>
-          <TouchableOpacity
-            style={[modalStyles.button]}
-            onPress={handleAddClass}
-          >
+          <TouchableOpacity style={[modalStyles.button]} onPress={createClass}>
             <Text style={modalStyles.buttonText}>Add</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[modalStyles.button]} onPress={toggleModal}>
@@ -132,7 +165,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={userAvatar}
+        userAvatar={userAvatarPlaceholder}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>
@@ -149,7 +182,7 @@ const HomeScreen = (props: HomeScreenProps) => {
         <Text style={styles.yourClassesText}>Your Classes</Text>
         <FlatList
           data={classes}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.classId}
           renderItem={({ item }) => (
             <ClassCard
               classData={item}

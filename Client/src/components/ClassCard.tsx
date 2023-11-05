@@ -5,7 +5,7 @@ interface ClassCardProps {
 
     classData: ClassData,
     onPressed: (className: string) => void,
-    onDelete: (id: number) => void
+    onDelete: (id: string) => void
 
 }
 
@@ -13,20 +13,20 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
   const currentClass = props.classData
 
   const handleDelete = () => {
-    props.onDelete(currentClass.id); // Trigger the delete action with the class ID
+    props.onDelete(currentClass.classId); // Trigger the delete action with the class ID
   };
 
   const handlePressOnClass = () => {
-      props.onPressed(currentClass.name);
+      props.onPressed(currentClass.className);
   }
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePressOnClass}>
       <View style={styles.leftContent}>
-        <Text style={styles.name}>{currentClass.name}</Text>
-        <Text style={styles.major}>{currentClass.major}</Text>
+        <Text style={styles.name}>{currentClass.className}</Text>
+        <Text style={styles.major}>{currentClass.majors.join(', ')}</Text>
         <Text style={styles.attendanceRequired}>
-          Attendance Required: {currentClass.attendanceRequired}
+          Attendance Required: {currentClass.maxAttendance}
         </Text>
       </View>
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>

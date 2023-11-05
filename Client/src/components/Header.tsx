@@ -4,7 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import Colors from '@/constants/Colors';
 import Sizes from '@/constants/Sizes';
-
+import { userAvatarPlaceholder } from '@/Utils/placeholders';
+import {RootState} from '@/store/store'
+import { useSelector } from 'react-redux';
 
 type HeaderProps = {
 
@@ -17,6 +19,8 @@ type HeaderProps = {
 
 const Header = (props: HeaderProps) => {
   const navigation = useNavigation();
+
+
   return (
     <View style={styles.header}>
       <View style={styles.headerRowContainer}>
@@ -24,7 +28,9 @@ const Header = (props: HeaderProps) => {
         <Text style={styles.title}>{props.title}</Text>
       </View>
       <TouchableOpacity onPress={props.onPress}>
+
         <Image source={{ uri: props.userAvatar }} style={styles.avatar} />
+
       </TouchableOpacity>
     </View>
   );
