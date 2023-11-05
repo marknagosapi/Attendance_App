@@ -43,6 +43,7 @@ async def getFaceData(imageFile,classId):
     imageEncoded = face_recognition.face_encodings(image)
 
     students = getStudentsFacesAndIds(classId)
+    users = []
   
     for face in imageEncoded:
         wichFace = face_recognition.compare_faces(students["faces"],face)
@@ -50,8 +51,16 @@ async def getFaceData(imageFile,classId):
             if isIn: 
                 user = getUserById(id)
                 user["userId"] = id
-                return user
-    return None                
+                user["isPresent"] = True
+                users.append(users)
+    
+    for id in students["restIds"]:
+        user = getUserById(id)
+        user["userId"] = id
+        user["isPresent"] = False
+        users.append(users)
+
+    return users        
     
 
     

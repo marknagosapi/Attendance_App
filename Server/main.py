@@ -1,6 +1,6 @@
 from fastapi import FastAPI, responses, UploadFile, File
 from faceDetection import *
-from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses
+from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses, addStudentToClass
 import database
 from pydantic import BaseModel
 from typing import Optional
@@ -21,10 +21,11 @@ class RegisterBody(BaseModel):
   password: str
   email: str
   userType: str
-  major: str
+  major: Optional[str] = None
 
 @app.post("/register")
 def register(regBody: RegisterBody):
+  if regBody.userType == "student" and regBody.major == None: return False
   return uploadNewUser(regBody.model_dump())
 
 
@@ -37,10 +38,10 @@ def login(loginBody: LoginBody):
   return getUserByNameAndPassword(loginBody.email, loginBody.password)
 
 class CreateClassBody(BaseModel):
-  teacherIds: list[str]
+  teacherId: str
   className: str
   majors: list[str]
-  maxAttendance: Optional[int]
+  maxAttendance: Optional[int] = None
 
 @app.post("/create_class")
 def addClass(classBody: CreateClassBody):
@@ -58,3 +59,7 @@ def getClasses(userId:str):
 @app.get("/get_class_students")
 def getClassStudents(classId:str):
   return database.getClassStudents(classId)
+
+@app.get("/join_to_class")
+def joinStudent(studentId:str, classCode:str):
+  return addStudentToClass(classCode,studentId)
