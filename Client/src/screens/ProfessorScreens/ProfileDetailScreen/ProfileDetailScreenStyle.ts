@@ -62,7 +62,13 @@ export const styles = StyleSheet.create({
       alignItems:'center'
     },
 
-    addNewProfileText:{
+    subSectionTitle:{
+      padding: 10,
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+
+    infoTitle:{
       paddingHorizontal: 10,
       fontWeight: 'bold',
       fontSize: 20,

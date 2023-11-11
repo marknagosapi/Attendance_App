@@ -1,8 +1,9 @@
 type ProfessorRootStackParamList = {
 
   ClassDetailScreen: {
-    className: string;
-    students: Student[];
+    className: string
+    classCode: string
+    students: Student[]
   };
 
   HomeScreen:{

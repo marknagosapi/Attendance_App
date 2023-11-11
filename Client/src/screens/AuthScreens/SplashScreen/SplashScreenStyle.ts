@@ -7,9 +7,6 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.whiteColor
   },
   video: {
-    width: '100%',
-    marginTop: 100,
-    alignSelf: 'center',
     aspectRatio: 9/16
   },
 });

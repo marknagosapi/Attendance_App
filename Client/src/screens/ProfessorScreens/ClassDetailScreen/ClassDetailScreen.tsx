@@ -23,7 +23,7 @@ type Props = {
 };
 
 const ClassDetailScreen: React.FC<Props> = (props) => {
-  const { className, students } = props.route.params; // Get class details and students from navigation params
+  const { className, classCode, students } = props.route.params; // Get class details and students from navigation params
 
   const handleTakeAttendance = () => {
     console.log("Professor Want's To Take Attendance");
@@ -34,6 +34,7 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
     <View style={{ flex: 1 }}>
       <Header title={className} goesBack />
       <View style={styles.container}>
+        <Text style={styles.sectionTitle}>Class Code: {classCode}</Text>
         <Text style={styles.sectionTitle}>Students</Text>
 
         <FlatList

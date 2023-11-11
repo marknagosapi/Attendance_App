@@ -19,6 +19,7 @@ import { CheckBox } from "react-native-elements";
 import { MAJORS } from "@/Utils/placeholders";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
+import ClassHoldModal from "@/components/ClassHoldModal";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -29,16 +30,47 @@ type HomeScreenProps = {
 
 const HomeScreen = (props: HomeScreenProps) => {
   // redux data
-  const teacherID = useSelector((state: RootState) => state.auth.userId);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [classes, setClasses] = useState<ClassData[]>([]);
-  const teacherIds = [teacherID, "0242"]; // amig lajos kicsereli a backendben
+  const teacherId = useSelector((state: RootState) => state.auth.userId);
 
   // screen data
   const [className, setClassName] = useState("");
   const [majors, setSelectedMajors] = useState<string[]>([]);
   const [maxAttendance, setMinimumClassAttendance] = useState(0);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [classes, setClasses] = useState<ClassData[]>([]);
+  const [refreshData, setRefreshData] = useState(false);
 
+  // for the class hold (starting from)
+  const [selectedClass, setSelectedClass] = useState<Partial<ClassData> | null>(null);
+  const [isHoldModalVisible, setHoldModalVisible] = useState(false);
+
+  const handleClassHold = (classId:string, className:string, majors: string[], maxAttendance: number) => {
+    setSelectedClass({classId,className,majors,maxAttendance});
+    setHoldModalVisible(true);
+    
+  };
+
+  const handleEdit = () => {
+    console.log("handleEdit");
+  };
+
+  const handleDelete = () => {
+    console.log("handleDelete");
+  };
+
+  const closeModal = () => {
+
+    setHoldModalVisible(false);
+  };
+
+  // for the hold modal (end)
+
+  const refresh = () => {
+    // Call this function to re-fetch the data
+    setRefreshData(prevRefreshData => !prevRefreshData); // Toggles the refreshData state
+  };
+
+  // functions
   const toggleModal = () => {
     setClassName("");
     setSelectedMajors([]);
@@ -46,13 +78,9 @@ const HomeScreen = (props: HomeScreenProps) => {
     setModalVisible(!isModalVisible);
   };
 
-  const onDeleteClass = (idToDelete: string) => {
-    console.log("onDeleteClass");
-  };
-
   // Function to get classes by teacherIds
   const getClasses = () => {
-    fetch(BACKEND_URL + "/get_classes?userId=" + teacherID, {
+    fetch(BACKEND_URL + "/get_classes?userId=" + teacherId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +88,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+  
         setClasses(data);
       })
       .catch((error) => {
@@ -70,7 +98,7 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     getClasses();
-  }, []);
+  }, [refreshData]);
 
   const toggleMajor = (major: string) => {
     if (majors.includes(major)) {
@@ -85,10 +113,10 @@ const HomeScreen = (props: HomeScreenProps) => {
       alert("Please fill in all required fields.");
       return;
     }
-    console.log(majors);
+  
     fetch(BACKEND_URL + "/create_class", {
       method: "POST",
-      body: JSON.stringify({ teacherIds, className, majors, maxAttendance }),
+      body: JSON.stringify({ teacherId, className, majors, maxAttendance }),
       headers: {
         "Content-Type": "application/json",
       },
@@ -96,6 +124,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       .then((response) => response.json())
       .then((data) => {
         console.log("Class created:", data);
+        refresh();
       })
       .catch((error) => {
         console.error("Error creating class:", error);
@@ -108,6 +137,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     console.log("Professor Entered Edit Profile Screen");
     props.navigation.navigate("ProfileDetailScreen", {});
   }
+
 
   // the modal
   const modalContent = (
@@ -157,10 +187,15 @@ const HomeScreen = (props: HomeScreenProps) => {
     students.push(generateRandomStudent());
   }
 
-  const handleClassPress = (className: string) => {
-    props.navigation.navigate("ClassDetailScreen", { className, students });
+  const handleClassPress = (className: string, classCode: string) => {
+    props.navigation.navigate("ClassDetailScreen", {
+      className,
+      classCode,
+      students,
+    });
   };
 
+  console.log(selectedClass)
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -169,6 +204,15 @@ const HomeScreen = (props: HomeScreenProps) => {
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>
+        <ClassHoldModal
+          visible={isHoldModalVisible}
+          onClose={closeModal}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          classData={
+            selectedClass ? selectedClass : {classId:'', className:'', majors: [''], maxAttendance: 0}
+          }
+        />
         <Modal
           style={{ flex: 1 }}
           animationType="slide"
@@ -187,7 +231,7 @@ const HomeScreen = (props: HomeScreenProps) => {
             <ClassCard
               classData={item}
               onPressed={handleClassPress}
-              onDelete={onDeleteClass}
+              onHold={handleClassHold}
             ></ClassCard>
           )}
         />
