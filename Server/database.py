@@ -1,14 +1,20 @@
-import random, string
+import random, string, json
 import firebase_admin
-from firebase_admin import credentials, firestore 
+from firebase_admin import credentials, firestore, auth
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
+import requests
 
 cred = credentials.Certificate("db_key.json")
-firebase_admin.initialize_app(cred)
+app = firebase_admin.initialize_app(cred)
 
-db:Client = firestore.client()
+apiKey = json.load(open("config.json"))["apiKey"]
+signUpLink = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={apiKey}"
+signInLink = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={apiKey}"
+
+db:Client = firestore.client(app=app)
+
 refUsers = db.collection("Users")
 refFaces = db.collection("Faces")
 refClasses = db.collection("Classes")
@@ -44,21 +50,24 @@ def getStudentsFacesAndIds(classId):
 def getUserById(id: str):
     return refUsers.document(id).get().to_dict()
 
+def getUserEmail(id):
+    auth.get_user(id).email
+
 def uploadNewUser(user):
+    regData = {
+        "email": user["email"],
+        "password": user["password"],
+        "returnSecureToken": True
+    }
 
-    composite_filter = BaseCompositeFilter(
-        operator=StructuredQuery.CompositeFilter.Operator.AND,
-        filters=[
-            FieldFilter("email", "==", user["email"]),
-            FieldFilter("password", "==", user["password"])
-        ]
-    )
+    req = requests.post(signUpLink, data=regData)
+    if req.status_code == 400: return req.json()["error"]["message"]
 
-    isUserExists = len(refUsers.where(filter = composite_filter).get()) != 0
+    del user["password"]
+    del user["email"]
 
-    if isUserExists: return False
-
-    userId = refUsers.add(user)[1].id
+    userId = req.json()["localId"]
+    refUsers.document(userId).set(user)
 
     user = refUsers.document(userId).get().to_dict()
     user["userId"] = userId
@@ -75,18 +84,15 @@ def uploadNewUser(user):
     return user
 
 def getUserByNameAndPassword(email, password):
-    compositeFilter = BaseCompositeFilter(
-        operator=StructuredQuery.CompositeFilter.Operator.AND,
-        filters=[
-            FieldFilter("email", "==", email),
-            FieldFilter("password", "==", password)
-        ]
-    )
-    user = refUsers.where(filter=compositeFilter).get()
-    if user == []: return None
+    req = requests.post(signInLink, data={
+        "email": email,
+        "password": password,
+        "returnSecureToken": True
+    })
+    if req.status_code == 400: return req.json()["error"]["message"]
     
-    id = user[0].id
-    user = user[0].to_dict()
+    id = req.json()["localId"]
+    user = refUsers.document(id).get().to_dict()
     user["id"] = id
     return user
 
@@ -144,7 +150,7 @@ def addStudentToClass(classCode,studentId):
     classId = refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()[0].id 
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
 
-def addAttendaceForClass(classId,studentIds:list):
+def addAttendaceForClass(classId,studentIds:list[str]):
     refClass = refClasses.document(classId)
     for studentId in studentIds:
         attendance = refClass.collection("students").document(studentId).get().to_dict()["attendance"] + 1
@@ -155,14 +161,10 @@ def getClass(classId):
 
 def getClassStudents(classId):
     users = []
-    for user in refClasses.document(classId).collection("students").stream():
-        refUser = refUsers.document(user.id).get().to_dict()
-        refUser["userId"] = user.id
-        refUser["attendance"] = user.to_dict()["attendance"]
-        users.append(refUser)
+    for refUser in refClasses.document(classId).collection("students").stream():
+        user = refUsers.document(refUser.id).get().to_dict()
+        user["userId"] = refUser.id
+        user["attendance"] = refUser.to_dict()["attendance"]
+        users.append(user)
     
     return users
-
-def asd():
-
-    return None
