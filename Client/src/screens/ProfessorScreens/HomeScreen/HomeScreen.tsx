@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./HomeScreenStyle";
@@ -20,6 +21,7 @@ import { MAJORS } from "@/Utils/placeholders";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import ClassHoldModal from "@/components/ClassHoldModal";
+import Colors from "@/constants/Colors";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -39,15 +41,22 @@ const HomeScreen = (props: HomeScreenProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [classes, setClasses] = useState<ClassData[]>([]);
   const [refreshData, setRefreshData] = useState(false);
+  const [loadingClasses, setLoadingClassess] = useState(true);
 
   // for the class hold (starting from)
-  const [selectedClass, setSelectedClass] = useState<Partial<ClassData> | null>(null);
+  const [selectedClass, setSelectedClass] = useState<Partial<ClassData> | null>(
+    null
+  );
   const [isHoldModalVisible, setHoldModalVisible] = useState(false);
 
-  const handleClassHold = (classId:string, className:string, majors: string[], maxAttendance: number) => {
-    setSelectedClass({classId,className,majors,maxAttendance});
+  const handleClassHold = (
+    classId: string,
+    className: string,
+    majors: string[],
+    maxAttendance: number
+  ) => {
+    setSelectedClass({ classId, className, majors, maxAttendance });
     setHoldModalVisible(true);
-    
   };
 
   const handleEdit = () => {
@@ -59,7 +68,6 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const closeModal = () => {
-
     setHoldModalVisible(false);
   };
 
@@ -67,7 +75,7 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   const refresh = () => {
     // Call this function to re-fetch the data
-    setRefreshData(prevRefreshData => !prevRefreshData); // Toggles the refreshData state
+    setRefreshData((prevRefreshData) => !prevRefreshData); // Toggles the refreshData state
   };
 
   // functions
@@ -79,8 +87,8 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   // Function to get classes by teacherIds
-  const getClasses = () => {
-    fetch(BACKEND_URL + "/get_classes?userId=" + teacherId, {
+  const getClasses = async () => {
+    await fetch(BACKEND_URL + "/get_classes?userId=" + teacherId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,8 +96,8 @@ const HomeScreen = (props: HomeScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-  
         setClasses(data);
+        setLoadingClassess(false);
       })
       .catch((error) => {
         console.error("Error fetching classes:", error);
@@ -113,7 +121,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       alert("Please fill in all required fields.");
       return;
     }
-  
+
     fetch(BACKEND_URL + "/create_class", {
       method: "POST",
       body: JSON.stringify({ teacherId, className, majors, maxAttendance }),
@@ -137,7 +145,6 @@ const HomeScreen = (props: HomeScreenProps) => {
     console.log("Professor Entered Edit Profile Screen");
     props.navigation.navigate("ProfileDetailScreen", {});
   }
-
 
   // the modal
   const modalContent = (
@@ -195,7 +202,14 @@ const HomeScreen = (props: HomeScreenProps) => {
     });
   };
 
-  console.log(selectedClass)
+  if (loadingClasses) {
+    return (
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -210,7 +224,9 @@ const HomeScreen = (props: HomeScreenProps) => {
           onEdit={handleEdit}
           onDelete={handleDelete}
           classData={
-            selectedClass ? selectedClass : {classId:'', className:'', majors: [''], maxAttendance: 0}
+            selectedClass
+              ? selectedClass
+              : { classId: "", className: "", majors: [""], maxAttendance: 0 }
           }
         />
         <Modal

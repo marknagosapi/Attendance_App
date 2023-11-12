@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import { styles } from "./RegisterScreenStyle";
@@ -11,7 +11,6 @@ import { RootState } from "@/store/store";
 import { showAlert } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
 
-
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<any>;
 };
@@ -22,10 +21,22 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   const [userType, setUserType] = useState("student");
   const [major, setSelectedMajor] = useState<string>("informatics");
 
-
   const dispatch = useDispatch();
 
   const userID = useSelector((state: RootState) => state.register.userId);
+  
+
+  useEffect(() => {
+
+    if (!userID) {
+      return;
+    }
+    if (userType == "teacher") {
+      props.navigation.replace("HomeScreen");
+    } else {
+      props.navigation.replace("StudentHomeScreen");
+    }
+  }, [userID]);
 
   const onRegister = async () => {
     const response = await fetch(BACKEND_URL + "/register", {
@@ -68,9 +79,6 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     }
 
     await onRegister();
-
-    if (userID != null) props.navigation.navigate("Login");
-    else showAlert("Could Not Register!");
   };
 
   return (

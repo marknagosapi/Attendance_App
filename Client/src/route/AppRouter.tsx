@@ -20,7 +20,7 @@ function AppRouter() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="CameraScreen"
+        initialRouteName="SplashScreen"
         screenOptions={{
           headerStyle: { backgroundColor: Colors.usedGreenColor },
           headerTintColor: "#fff",
