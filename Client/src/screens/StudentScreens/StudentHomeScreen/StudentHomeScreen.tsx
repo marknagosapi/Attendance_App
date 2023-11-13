@@ -12,7 +12,7 @@ import { styles, modalStyles } from "./StudentHomeScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StudentRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
-import { userAvatar } from "@/Utils/placeholders";
+import { userAvatarPlaceholder } from "@/Utils/placeholders";
 import CourseCard from "@/components/CourseCard";
 
 type StudentHomeScreenProps = {
@@ -25,31 +25,32 @@ type StudentHomeScreenProps = {
 const StudentHomeScreen = (props: StudentHomeScreenProps) => {
   
   const [isModalVisible, setModalVisible] = useState(false);
-  const [courses, setCourses] = useState<CourseData[]>([]);
+  const [classes, setclasses] = useState<CourseData[]>([]);
 
-  const [courseName, setcourseName] = useState("");
+  const [className, setClassName] = useState("");
   // const [courseMajor, setcourseMajor] = useState("");
   // const [minimumcourseAttendance, setMinimumcourseAttendance] = useState(0);
 
   const idCounter = useRef(1);
 
   const toggleModal = () => {
+    setClassName("");
     setModalVisible(!isModalVisible);
   };
 
   const onDeleteCourse = (idToDelete: number) => {
     // Use the filter method to create a new array with the course removed
-    const updatedCourses = courses.filter(
+    const updatedclasses = classes.filter(
       (courseItem) => courseItem.id !== idToDelete
     );
 
-    // Update the state with the new list of courses
-    setCourses(updatedCourses);
+    // Update the state with the new list of classes
+    setclasses(updatedclasses);
   };
 
   const handleAddCourse = () => {
     // Validation
-    if (courseName == "") {
+    if (className == "") {
       // Handle validation error (e.g., display an error message)
       alert("Please fill in all required fields.");
       return;
@@ -57,12 +58,12 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     //Create a new course object with the entered data
     const newCourse: CourseData = {
       id: idCounter.current,
-      name: courseName,
+      name: className,
     };
 
     idCounter.current++;
     // Add the new course to your data or state
-    setCourses([...courses, newCourse]);
+    setclasses([...classes, newCourse]);
 
     // Clear the input fields and close the modal
     toggleModal();
@@ -77,13 +78,13 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
   const modalContent = (
     <View style={[modalStyles.modalContainer]}>
       <View style={modalStyles.modalContent}>
-        <Text style={modalStyles.title}>Add Course</Text>
+        <Text style={modalStyles.title}>Join Class</Text>
         <TextInput
-          placeholder="Course Name"
+          placeholder="Enter Code"
           placeholderTextColor={'#888'}
           style={modalStyles.input}
-          value={courseName}
-          onChangeText={(text) => setcourseName(text)}
+          value={className}
+          onChangeText={(text) => setClassName(text)}
         />
         <View style={modalStyles.buttonHolder}>
           <TouchableOpacity
@@ -102,14 +103,14 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
 
 
   const handleCoursePress = (courseName: string) => {
-    props.navigation.navigate("CourseDetailScreen", {courseName});
+    props.navigation.navigate("StudentClassDetailScreen", {courseName}); // id
   };
 
   return (
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={userAvatar}
+        userAvatar={userAvatarPlaceholder}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>
@@ -123,9 +124,9 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
           {modalContent}
         </Modal>
 
-        <Text style={styles.yourCoursesText}>Your Courses</Text>
+        <Text style={styles.yourClassesText}>Your Classes</Text>
         <FlatList
-          data={courses}
+          data={classes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <CourseCard
@@ -135,7 +136,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
             ></CourseCard>
           )}
         />
-        <CustomButton title="Add Course" onPress={toggleModal} />
+        <CustomButton title="Add Class" onPress={toggleModal} />
       </View>
     </View>
   );
