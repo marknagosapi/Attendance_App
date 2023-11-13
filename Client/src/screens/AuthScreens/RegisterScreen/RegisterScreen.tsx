@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import ModalDropdown from "react-native-modal-dropdown";
 import { styles } from "./RegisterScreenStyle";
@@ -19,11 +19,24 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("student");
-  const [major, setSelectedMajor] = useState<string | null>("Informatics");
+  const [major, setSelectedMajor] = useState<string>("informatics");
 
   const dispatch = useDispatch();
 
   const userID = useSelector((state: RootState) => state.register.userId);
+  
+
+  useEffect(() => {
+
+    if (!userID) {
+      return;
+    }
+    if (userType == "teacher") {
+      props.navigation.replace("HomeScreen");
+    } else {
+      props.navigation.replace("StudentHomeScreen");
+    }
+  }, [userID]);
 
   const onRegister = async () => {
     const response = await fetch(BACKEND_URL + "/register", {
@@ -35,9 +48,10 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     });
     if (response.status === 200) {
       const data = await response.json();
+      console.log(response.json());
       if (data) {
-        console.log(data)
-        console.log("Successfully registered!")
+        console.log(data);
+        console.log("Successfully registered!");
         dispatch(setRegistered({ userId: data.userID }));
       } else {
         console.log("Failed to register!");
@@ -55,7 +69,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   ];
 
   const onMajorChange = (major: string) => {
-    setSelectedMajor(major);
+    setSelectedMajor(major.toLowerCase);
   };
 
   const handleRegistration = async () => {
@@ -63,9 +77,8 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
       showAlert("Missing Field Data!");
       return;
     }
+
     await onRegister();
-    if (userID != null) props.navigation.navigate("Login");
-    else showAlert("Could Not Register!");
   };
 
   return (

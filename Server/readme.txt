@@ -21,7 +21,7 @@ POST /login
         "userName": userName,
         "password": password
         }
-    returns: user if successful, else returns null
+    returns: user if successful, else returns "INVALID_EMAIL" or "INVALID_LOGIN_CREDENTIALS"
 
 POST /register
     body:
@@ -29,9 +29,10 @@ POST /register
         "userName": "string",
         "password": "string",
         "email": "string",
-        "userType": "string"
+        "userType": "string",
+        "major": null | "string"
         }
-    returns: user if successful, else returns null
+    returns: user if successful, else returns "EMAIL_EXISTS", "INVALID_EMAIL" or "WEAK_PASSWORD : Password should be at least 6 characters"
 
 Check attendance in the given class
 POST /check?classId=classId

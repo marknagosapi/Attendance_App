@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { styles } from "./LoginScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -17,6 +17,16 @@ function LoginScreen(props: LoginScreenProps) {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const userType = useSelector((state: RootState) => state.auth.userType);
 
+
+  useEffect(()=>{
+    if (!userId) { return;}
+    if (userType == "teacher") {
+      props.navigation.replace("HomeScreen");
+    } else {
+      props.navigation.replace("StudentHomeScreen");
+    }
+  },[userId])
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -25,19 +35,7 @@ function LoginScreen(props: LoginScreenProps) {
       showAlert("Missing Field Data!");
       return;
     }
-
     await onLogin();
-
-    console.log(userId + "checked");
-    if (userId != null) {
-      if (userType == "teacher") {
-        props.navigation.replace("HomeScreen");
-      } else {
-        props.navigation.replace("StudentHomeScreen");
-      }
-    } else {
-      showAlert("This User Does Not Exist");
-    }
   };
 
   const onLogin = async () => {
@@ -60,9 +58,11 @@ function LoginScreen(props: LoginScreenProps) {
             userType: data.userType,
           })
         );
+        return true;
       } else {
-        console.log("User Not Found!");
-        // if login was unsuccessfull
+
+        showAlert("This User Does Not Exist");
+        return false;
       }
     }
   };
