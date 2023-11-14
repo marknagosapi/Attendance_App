@@ -13,6 +13,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.whiteColor,
   },
+  horizontal: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
   classItem: {
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",

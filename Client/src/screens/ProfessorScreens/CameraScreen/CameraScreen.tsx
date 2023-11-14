@@ -115,11 +115,7 @@ const CameraScreen = (props: CameraScreenProps) => {
           </View>
         </ImageBackground>
       )) || (
-        <Camera
-          style={{ flex: 1 }}
-          type={CameraType.back}
-          ref={camareRef}
-        >
+        <Camera style={{ flex: 1 }} type={CameraType.back} ref={camareRef}>
           <View style={styles.container}>
             <TouchableOpacity
               style={styles.takeAttendanceButton}

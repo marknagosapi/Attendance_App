@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     // major: {
     //   fontSize: 16,
     // },
-    yourCoursesText: {
+    yourClassesText: {
         fontSize: 24, // Increased font size
         fontWeight: 'bold',
         marginBottom: 10,

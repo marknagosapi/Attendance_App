@@ -40,8 +40,9 @@ type StudentRootStackParamList = {
 
   }
 
-  CourseDetailScreen:{
-    courseName: string;
+  StudentClassDetailScreen:{
+    // classId: string;
+  
   }
 
   // Define other screen params here
