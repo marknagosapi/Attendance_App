@@ -1,10 +1,10 @@
-import random, string, json
+import random, string, json, requests
 import firebase_admin
 from firebase_admin import credentials, firestore, auth
+from google.cloud.firestore_v1 import ArrayUnion
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
-import requests
 
 cred = credentials.Certificate("db_key.json")
 app = firebase_admin.initialize_app(cred)
@@ -73,7 +73,7 @@ def uploadNewUser(user):
     user["userId"] = userId
 
     if user["userType"] == "teacher": 
-        refUsers.document(userId).update({"calsses": []})
+        refUsers.document(userId).update({"classes": []})
         user["classes"] = []
         return user
 
@@ -116,6 +116,8 @@ def addNewClass(classBody):
     classBody["classCode"] = classCode
 
     classId = refClasses.add(classBody)[1].id
+
+    refUsers.document(classBody["teacherId"]).update({"classes": ArrayUnion([classId])})
 
     for student in refUsers.where(filter= compositeFilter).stream():
         refClasses.document(classId).colletion("students").document(student.id).set({"attendance": 0})
