@@ -1,7 +1,7 @@
 from fastapi import FastAPI, responses, UploadFile, File
 from faceDetection import *
 from models import LoginBody, RegisterBody, CreateClassBody, attendanceBody
-from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses, addStudentToClass
+from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses, addStudentToClass, addAttendaceForClass
 import database
 
 app = FastAPI()
@@ -53,4 +53,4 @@ def joinStudent(studentId:str, classCode:str):
 
 app.post("/add_attendance")
 def addAttendance(attendanceBody: attendanceBody):
-  return addStudentToClass(attendanceBody.classId,attendanceBody.userIds)
+  return addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)
