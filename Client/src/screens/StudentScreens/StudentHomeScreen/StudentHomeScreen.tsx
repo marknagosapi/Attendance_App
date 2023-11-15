@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { RootState } from "@/store/store";
+import { connect, useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -6,14 +8,17 @@ import {
   TouchableOpacity,
   TextInput,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./StudentHomeScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StudentRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
-import { userAvatarPlaceholder } from "@/Utils/placeholders";
+import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
 import CourseCard from "@/components/CourseCard";
+import Colors from "@/constants/Colors";
+import { showAlert } from "@/Utils/function";
 
 type StudentHomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -23,47 +28,84 @@ type StudentHomeScreenProps = {
 };
 
 const StudentHomeScreen = (props: StudentHomeScreenProps) => {
-  
   const [isModalVisible, setModalVisible] = useState(false);
-  const [classes, setclasses] = useState<CourseData[]>([]);
+  const [classes, setClasses] = useState<ClassData[]>([]);
 
-  const [className, setClassName] = useState("");
-  // const [courseMajor, setcourseMajor] = useState("");
-  // const [minimumcourseAttendance, setMinimumcourseAttendance] = useState(0);
+  const [classCode, setClassCode] = useState("");
+  const [loadingClasses, setLoadingClassess] = useState(true);
+  const [refreshData, setRefreshData] = useState(false);
 
-  const idCounter = useRef(1);
+  const studentId = useSelector((state: RootState) => state.auth.userId);
+
+  const refresh = () => {
+    // Call this function to re-fetch the data
+    setRefreshData((prevRefreshData) => !prevRefreshData); // Toggles the refreshData state
+  };
+
+
+  useEffect(() => {
+    getClasses()
+  }, [refreshData]);
+
+  // Function to get classes by teacherIds
+  const getClasses = async () => {
+    await fetch(BACKEND_URL + "/get_classes?userId=" + studentId, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setClasses(data);
+        setLoadingClassess(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  };
 
   const toggleModal = () => {
-    setClassName("");
+    setClassCode("");
     setModalVisible(!isModalVisible);
   };
 
-  const onDeleteCourse = (idToDelete: number) => {
-    // Use the filter method to create a new array with the course removed
-    const updatedclasses = classes.filter(
-      (courseItem) => courseItem.id !== idToDelete
-    );
-
-    // Update the state with the new list of classes
-    setclasses(updatedclasses);
+  const joinClassByClassCode = async () => {
+    await fetch(
+      BACKEND_URL +
+        "/join_to_class?studentId=" +
+        studentId +
+        "&classCode=" +
+        classCode,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setLoadingClassess(false);
+        refresh();
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+        setLoadingClassess(true);
+      });
   };
 
-  const handleAddCourse = () => {
+  const handleAddClass = async () => {
     // Validation
-    if (className == "") {
+    if (classCode == "") {
       // Handle validation error (e.g., display an error message)
-      alert("Please fill in all required fields.");
+      showAlert("Please fill in all required fields.");
       return;
     }
-    //Create a new course object with the entered data
-    const newCourse: CourseData = {
-      id: idCounter.current,
-      name: className,
-    };
 
-    idCounter.current++;
-    // Add the new course to your data or state
-    setclasses([...classes, newCourse]);
+    // Add New Class By ClassCode
+
+    await joinClassByClassCode();
 
     // Clear the input fields and close the modal
     toggleModal();
@@ -81,15 +123,15 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
         <Text style={modalStyles.title}>Join Class</Text>
         <TextInput
           placeholder="Enter Code"
-          placeholderTextColor={'#888'}
+          placeholderTextColor={"#888"}
           style={modalStyles.input}
-          value={className}
-          onChangeText={(text) => setClassName(text)}
+          value={classCode}
+          onChangeText={(text) => setClassCode(text)}
         />
         <View style={modalStyles.buttonHolder}>
           <TouchableOpacity
             style={[modalStyles.button]}
-            onPress={handleAddCourse}
+            onPress={handleAddClass}
           >
             <Text style={modalStyles.buttonText}>Add</Text>
           </TouchableOpacity>
@@ -101,10 +143,17 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     </View>
   );
 
-
-  const handleCoursePress = (courseName: string) => {
-    props.navigation.navigate("StudentClassDetailScreen", {courseName}); // id
+  const handleCoursePress = (classData: ClassData) => {
+    props.navigation.navigate("StudentClassDetailScreen", { classData }); // id
   };
+
+  if (loadingClasses) {
+    return (
+      <View style={[styles.container, styles.horizontal]}>
+        <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -127,12 +176,11 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
         <Text style={styles.yourClassesText}>Your Classes</Text>
         <FlatList
           data={classes}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.classId}
           renderItem={({ item }) => (
             <CourseCard
               courseData={item}
               onPressed={handleCoursePress}
-              onDelete={onDeleteCourse}
             ></CourseCard>
           )}
         />

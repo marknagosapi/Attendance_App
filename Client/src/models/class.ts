@@ -4,4 +4,5 @@
   className: string;
   majors: string[];
   maxAttendance: number;
+  teacherId: string;
 }

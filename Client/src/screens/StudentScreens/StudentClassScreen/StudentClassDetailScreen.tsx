@@ -1,63 +1,88 @@
-import React from 'react';
-import { View, Text} from 'react-native';
-import Header from '@/components/Header';
+import React, { useRef, useEffect, useState } from "react";
+import { View, Text, Animated, Easing } from "react-native";
+import Header from "@/components/Header";
 import { styles } from "./StudentClassDetailScreenStyle";
-import { RouteProp } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import {StudentRootStackParamList} from '@/route/RouteStackParamList'
-import CircularProgress from 'react-native-circular-progress-indicator';
+import { RouteProp } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StudentRootStackParamList } from "@/route/RouteStackParamList";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
+import Colors from "@/constants/Colors";
 
+// import CircularProgress from 'react-native-circular-progress-indicator';
 
-
-type StudentClassDetailScreenRouteProp = RouteProp<StudentRootStackParamList, 'StudentClassDetailScreen'>;
-type StudentClassDetailScreenNavigationProp = NativeStackNavigationProp<StudentRootStackParamList, 'StudentClassDetailScreen'>;
+type StudentClassDetailScreenRouteProp = RouteProp<
+  StudentRootStackParamList,
+  "StudentClassDetailScreen"
+>;
+type StudentClassDetailScreenNavigationProp = NativeStackNavigationProp<
+  StudentRootStackParamList,
+  "StudentClassDetailScreen"
+>;
 
 type Props = {
-    route: StudentClassDetailScreenRouteProp;
-    navigation: StudentClassDetailScreenNavigationProp;
+  route: StudentClassDetailScreenRouteProp;
+  navigation: StudentClassDetailScreenNavigationProp;
+};
+
+const StudentClassDetailScreen: React.FC<Props> = (props) => {
+  const currentClass = props.route.params;
+  const attendances = 4;
+
+  const progress = (attendances / currentClass.classData.maxAttendance) * 100;
+  const [progressColor, setProgressColor] = useState(Colors.usedGreenColor);
+
+  const handleAnimationComplete = () => {
+    setProgressColor("#00A36C");
+
+    setTimeout(() => {
+      setProgressColor(Colors.usedGreenColor);
+    }, 200);
   };
 
-
-const StudentClassDetailScreen: React.FC<Props> = ( props ) => { //class Id
-  //const { className, requiredAttendance, attendedHours } = props.route.params;
-
-  //dummy ertekek
-  const className = 'Android'
-  const requiredAttendance = 14
-  const attendedHours = 12
-
-  
-
   return (
-    <View style={{flex:1}}>
-      <Header title={className} goesBack />
+    <View style={{ flex: 1 }}>
+      <Header title={"Back To Classes"} goesBack />
       <View style={styles.textContainer}>
-        <Text style={styles.className}>{className}</Text>
-        <Text style={styles.requiredAttendance}>Required attendance: {requiredAttendance}</Text>
+        <Text style={styles.className}>{currentClass.classData.className}</Text>
+        <Text style={styles.requiredAttendance}>
+          Required attendance: {currentClass.classData.maxAttendance}
+        </Text>
       </View>
       <View style={styles.progressContainer}>
-        <Text style={{fontSize: 18, padding: 12} }>Your attendance:</Text>
-        <CircularProgress
-          value={attendedHours}
-          maxValue={requiredAttendance}
-          radius={120}
-          activeStrokeWidth={40}
-          inActiveStrokeWidth={40}
-          inActiveStrokeColor='black'
-          progressValueColor={'black'}
-          duration={250} // Animáció időtartama
-          strokeColorConfig={[
-            { color: 'red', value: 0 },
-            { color: 'skyblue', value: requiredAttendance*0.5},
-            { color: 'green', value: requiredAttendance },
-          ]}
-        />
+        <Text style={{ fontSize: 22, padding: 12, fontWeight: "bold" }}>
+          Your attendance:
+        </Text>
+        <AnimatedCircularProgress
+          size={220}
+          width={20}
+          fill={progress}
+          tintColor={progressColor}
+          backgroundColor="#3d5875"
+          rotation={0} // Initial rotation angle
+          lineCap="round"
+          duration={1200} // Adjust the duration as needed
+          onAnimationComplete={handleAnimationComplete}
+        >
+          {() => (
+            <View>
+              <Text
+                style={{
+                  fontSize: 30,
+                  color: Colors.usedGreenColor,
+                  alignSelf: "center",
+                }}
+              >
+                {attendances}/{currentClass.classData.maxAttendance}
+              </Text>
+              <Text style={{ fontSize: 16, color: "#bbb" }}>
+                Classes Attended
+              </Text>
+            </View>
+          )}
+        </AnimatedCircularProgress>
       </View>
     </View>
-    
   );
 };
 
-
 export default StudentClassDetailScreen;
-

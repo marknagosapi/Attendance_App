@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface ClassCardProps {
   classData: ClassData;
-  onPressed: (className: string, classCode: string) => void;
+  onPressed: (className: string, classCode: string, classId: string) => void;
   onHold: (classID:string, className:string, classMajors: string[], classAttendance: number) => void;
 }
 
@@ -15,7 +15,7 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
   };
 
   const handlePressOnClass = () => {
-    props.onPressed(currentClass.className, currentClass.classCode);
+    props.onPressed(currentClass.className, currentClass.classCode, currentClass.classId);
   };
 
   return (

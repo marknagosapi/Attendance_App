@@ -1,49 +1,31 @@
 type ProfessorRootStackParamList = {
-
   ClassDetailScreen: {
-    className: string
-    classCode: string
-    students: Student[]
+    className: string;
+    classCode: string;
+    classId: string;
   };
 
-  HomeScreen:{
-      
-  };
+  HomeScreen: {};
 
-  CameraScreen:{
+  CameraScreen: {classId: string};
 
-  };
+  ProfileDetailScreen: {};
 
-  ProfileDetailScreen:{
-
-  };
-
-  ResultScreen:{
-
-  };
+  ResultScreen: {};
 
   // Define other screen params here
 };
 
-
-
 // Student Root
 
 type StudentRootStackParamList = {
+  StudentHomeScreen: {};
 
-  StudentHomeScreen:{
-      
-  }
+  StudentProfileScreen: {};
 
-  
-  StudentProfileScreen:{
-
-  }
-
-  StudentClassDetailScreen:{
-    // classId: string;
-  
-  }
+  StudentClassDetailScreen: {
+    classData: ClassData;
+  };
 
   // Define other screen params here
 };

@@ -1,3 +1,4 @@
+import Colors from "@/constants/Colors";
 import Sizes from "@/constants/Sizes";
 import { StyleSheet } from "react-native";
 
@@ -5,6 +6,16 @@ export const styles = StyleSheet.create({
     container: {
       flex: 1,
       padding: 10,
+    },
+    horizontal: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: 10,
+    },
+    info:{
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: Colors.subtleInfoColor
     },
     modalContent: {
       flex: 1,

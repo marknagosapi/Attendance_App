@@ -1,5 +1,5 @@
 import React from "react";
-import { View} from "react-native";
+import { View } from "react-native";
 import { styles } from "./SplashScreenStyle";
 import { AVPlaybackStatus, Video } from "expo-av";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -8,7 +8,6 @@ type SplashScreenPros = {
   navigation: NativeStackNavigationProp<any>;
 };
 const SplashScreen = (props: SplashScreenPros) => {
-
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (!status.isLoaded) {
       return;

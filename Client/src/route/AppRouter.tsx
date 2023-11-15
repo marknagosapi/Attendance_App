@@ -11,9 +11,7 @@ import ProfileDetailScreen from "@/screens/ProfessorScreens/ProfileDetailScreen/
 import ClassDetailScreen from "@/screens/ProfessorScreens/ClassDetailScreen/ClassDetailScreen";
 import ResultScreen from "@/screens/ProfessorScreens/ResultScreen/ResultScreen";
 import StudentHomeScreen from "@/screens/StudentScreens/StudentHomeScreen/StudentHomeScreen";
-import StudentProfileScreen from "@/screens/StudentScreens/StudentProfileScreen/StudentProfileScreen";
 import StudentClassDetailScreen from "@/screens/StudentScreens/StudentClassScreen/StudentClassDetailScreen";
-
 
 function AppRouter() {
   const Stack = createNativeStackNavigator();
@@ -87,16 +85,16 @@ function AppRouter() {
             options={{ header: Header }}
           />
 
-        <Stack.Screen
+          <Stack.Screen
             name="StudentProfileScreen"
-            component={StudentProfileScreen}
+            component={ProfileDetailScreen}
             options={{ header: Header }}
-        />
-        <Stack.Screen
+          />
+          <Stack.Screen
             name="StudentClassDetailScreen"
             component={StudentClassDetailScreen}
             options={{ header: Header }}
-        />
+          />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

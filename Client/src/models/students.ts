@@ -1,6 +1,7 @@
- type Student = {
-  id: string;
-  name: string;
+type Student = {
+  userType: string;
   major: string;
+  userName: string;
+  userId: string;
   attendance: number;
 };

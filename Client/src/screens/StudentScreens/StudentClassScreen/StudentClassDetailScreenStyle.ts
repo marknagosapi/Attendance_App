@@ -1,3 +1,4 @@
+import Colors from "@/constants/Colors";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -8,11 +9,12 @@ export const styles = StyleSheet.create({
   },
   textContainer: {
     // position: 'absolute',
+    maxWidth: '80%',
     top: 20,
     left: 20,
   },
   className: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
     padding: 2
   },
