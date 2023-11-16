@@ -1,4 +1,4 @@
-from fastapi import FastAPI, responses, UploadFile, File
+from fastapi import FastAPI, UploadFile, File
 from faceDetection import *
 from models import LoginBody, RegisterBody, CreateClassBody, attendanceBody
 from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses, addStudentToClass, addAttendaceForClass
@@ -51,6 +51,6 @@ def getClassStudents(classId:str):
 def joinStudent(studentId:str, classCode:str):
   return addStudentToClass(classCode,studentId)
 
-app.post("/add_attendance")
+@app.post("/add_attendance")
 def addAttendance(attendanceBody: attendanceBody):
   return addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)

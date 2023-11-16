@@ -1,6 +1,6 @@
 import random, string, json, requests
 import firebase_admin
-from firebase_admin import credentials, firestore, auth
+from firebase_admin import credentials, firestore, auth, messaging
 from google.cloud.firestore_v1 import ArrayUnion
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
@@ -35,6 +35,9 @@ def getStudentsFacesAndIds(classId):
 
     for user in refClasses.document(classId).collection("students").stream():
         userFace = refFaces.document(user.id).get().to_dict()
+        if userFace == None: 
+            withNoFaces.append(user.id)
+            continue
         if userFace.get("encodedFace",None) == None:
             withNoFaces.append(user.id)
             continue
@@ -48,10 +51,12 @@ def getStudentsFacesAndIds(classId):
     }
 
 def getUserById(id: str):
-    return refUsers.document(id).get().to_dict()
+    user = refUsers.document(id).get().to_dict()
+    user["email"] = getUserEmail(id)
+    return user
 
 def getUserEmail(id):
-    auth.get_user(id).email
+    return auth.get_user(id).email
 
 def uploadNewUser(user):
     regData = {
@@ -157,6 +162,9 @@ def addAttendaceForClass(classId,studentIds:list[str]):
     for studentId in studentIds:
         attendance = refClass.collection("students").document(studentId).get().to_dict()["attendance"] + 1
         refClass.collection("students").document(studentId).update({"attendance": attendance})
+    className = refClass.get().to_dict()["className"]
+
+    # messaging.send(messaging.Message(notification=messaging.Notification(f"Attendance confirmed"),topic=className))
 
 def getClass(classId):
     return refClasses.document(classId).get().to_dict()
