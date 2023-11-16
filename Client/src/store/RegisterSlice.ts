@@ -3,11 +3,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   userId: string | null;
+  error: string | null;
 
 }
 
 const initialState: AuthState = {
   userId: null,
+  error: null,
 };
 
 const registerSlice = createSlice({
@@ -16,7 +18,7 @@ const registerSlice = createSlice({
   reducers: {
     setRegistered: (state, action: PayloadAction<AuthState>) => {
       state.userId = action.payload.userId;
-   
+      state.error = action.payload.error;
     },
   },
 });

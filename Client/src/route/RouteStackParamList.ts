@@ -24,7 +24,7 @@ type StudentRootStackParamList = {
   StudentProfileScreen: {};
 
   StudentClassDetailScreen: {
-    classData: ClassData;
+    classData: StudentClassData;
   };
 
   // Define other screen params here

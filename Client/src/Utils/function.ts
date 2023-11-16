@@ -41,3 +41,7 @@ export const showAlert = (msg: string) =>{
      msg
   )
 }
+
+export const isObject = (variable: any) => {
+  return typeof variable === 'object' && variable !== null && !Array.isArray(variable);
+};

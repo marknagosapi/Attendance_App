@@ -29,7 +29,7 @@ type StudentHomeScreenProps = {
 
 const StudentHomeScreen = (props: StudentHomeScreenProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [classes, setClasses] = useState<ClassData[]>([]);
+  const [classes, setClasses] = useState<StudentClassData[]>([]);
 
   const [classCode, setClassCode] = useState("");
   const [loadingClasses, setLoadingClassess] = useState(true);
@@ -57,6 +57,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setClasses(data);
         setLoadingClassess(false);
       })

@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
-import { View, Text, Animated, Easing } from "react-native";
+import React, { useState } from "react";
+import { View, Text } from "react-native";
 import Header from "@/components/Header";
 import { styles } from "./StudentClassDetailScreenStyle";
 import { RouteProp } from "@react-navigation/native";
@@ -26,9 +26,9 @@ type Props = {
 
 const StudentClassDetailScreen: React.FC<Props> = (props) => {
   const currentClass = props.route.params;
-  const attendances = 4;
 
-  const progress = (attendances / currentClass.classData.maxAttendance) * 100;
+
+  const progress = (currentClass.classData.attendance / currentClass.classData.maxAttendance) * 100;
   const [progressColor, setProgressColor] = useState(Colors.usedGreenColor);
 
   const handleAnimationComplete = () => {
@@ -72,7 +72,7 @@ const StudentClassDetailScreen: React.FC<Props> = (props) => {
                   alignSelf: "center",
                 }}
               >
-                {attendances}/{currentClass.classData.maxAttendance}
+                {currentClass.classData.attendance}/{currentClass.classData.maxAttendance}
               </Text>
               <Text style={{ fontSize: 16, color: "#bbb" }}>
                 Classes Attended

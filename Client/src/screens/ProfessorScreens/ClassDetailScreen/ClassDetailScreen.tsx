@@ -27,7 +27,9 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
   const { className, classCode, classId} = props.route.params; 
 
   const [students, setStudents] = useState<Student[]>([]);
+
   const getStudents = async () => {
+    console.log(classId)
     await fetch(BACKEND_URL + "/get_class_students?classId=" + classId ,{
       method: "GET",
       headers: {

@@ -8,7 +8,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { setRegistered } from "@/store/RegisterSlice";
 import { RootState } from "@/store/store";
-import { showAlert } from "@/Utils/function";
+import { showAlert, isObject } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
 
 type RegisterScreenProps = {
@@ -23,20 +23,28 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
   const dispatch = useDispatch();
 
-  const userID = useSelector((state: RootState) => state.register.userId);
-  
+  const userId = useSelector((state: RootState) => state.register.userId);
+  const error = useSelector((state: RootState) => state.register.error);
 
   useEffect(() => {
 
-    if (!userID) {
+    if(error != null){
+      showAlert(error);
+    }
+
+    if (!userId) {
       return;
     }
+
     if (userType == "teacher") {
+      console.log('teacher')
       props.navigation.replace("HomeScreen");
     } else {
+      console.log('prof')
       props.navigation.replace("StudentHomeScreen");
     }
-  }, [userID]);
+
+  }, [userId, error]);
 
   const onRegister = async () => {
     const response = await fetch(BACKEND_URL + "/register", {
@@ -48,14 +56,13 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     });
     if (response.status === 200) {
       const data = await response.json();
-      console.log(response.json());
-      if (data) {
-        console.log(data);
+  
+      if (isObject(data)) {
         console.log("Successfully registered!");
-        dispatch(setRegistered({ userId: data.userID }));
+        dispatch(setRegistered({ userId: data.userId, error: null }));
       } else {
         console.log("Failed to register!");
-        dispatch(setRegistered({ userId: data.userID }));
+        dispatch(setRegistered({ userId: null, error: data }));
       }
     }
   };
