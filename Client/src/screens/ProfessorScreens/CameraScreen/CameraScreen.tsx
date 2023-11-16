@@ -12,12 +12,21 @@ import { styles } from "./CameraScreenStyle";
 import CoolReloadButton from "@/components/ReloadButton";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
+import { BACKEND_URL } from "@/Utils/placeholders";
+import { RouteProp } from "@react-navigation/native";
+
+
+type CameraScreenRouteProp = RouteProp<
+  ProfessorRootStackParamList,
+  "CameraScreen"
+>;
 
 type CameraScreenProps = {
   navigation: NativeStackNavigationProp<
     ProfessorRootStackParamList,
     "CameraScreen"
   >;
+  route: CameraScreenRouteProp;
 };
 
 const CameraScreen = (props: CameraScreenProps) => {
@@ -26,9 +35,32 @@ const CameraScreen = (props: CameraScreenProps) => {
   >(false);
 
   const camareRef = useRef(null);
+  const classId = props.route.params;
 
   const [image, setImage] = useState(null);
   const deviceOrientation = ScreenOrientation;
+
+  const getAttendance = async () => {
+    const imageFile = new FormData();
+    imageFile.append("imageFile", {
+      uri: image,
+      type: "image/jpeg",
+      name: "image.jpg",
+    });
+
+    await fetch(BACKEND_URL + "/check?classId=" + classId, {
+      method: "POST",
+      body: imageFile,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {})
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  };
 
   let camera: Camera;
 
@@ -37,7 +69,8 @@ const CameraScreen = (props: CameraScreenProps) => {
     setImage(null);
   }
 
-  function handleImage() {
+  function handleImage(){
+    // getAttendance()
     props.navigation.replace("ResultScreen", {});
   }
 

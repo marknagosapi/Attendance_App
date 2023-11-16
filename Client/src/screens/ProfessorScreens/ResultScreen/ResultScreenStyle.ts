@@ -6,14 +6,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#fff",
-   
   },
   headerRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
     borderBottomWidth: 2,
-    borderBottomColor: Colors.usedGreenColor
+    borderBottomColor: Colors.usedGreenColor,
   },
   headerText: { fontWeight: "bold", fontSize: 25 },
 

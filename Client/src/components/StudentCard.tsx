@@ -1,13 +1,5 @@
-
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
-interface Student {
-  id: string;
-  name: string;
-  major: string;
-  attendance: number;
-}
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 interface StudentCardProps {
   student: Student;
@@ -16,9 +8,11 @@ interface StudentCardProps {
 const StudentCard: React.FC<StudentCardProps> = ({ student }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.studentName}>{student.name}</Text>
+      <Text style={styles.studentName}>{student.userName}</Text>
       <Text style={styles.major}>Major: {student.major}</Text>
-      <Text style={styles.attendance}>Attendance: {student.attendance} times</Text>
+      <Text style={styles.attendance}>
+        Attendance: {student.attendance} times
+      </Text>
     </View>
   );
 };
@@ -26,12 +20,12 @@ const StudentCard: React.FC<StudentCardProps> = ({ student }) => {
 const styles = StyleSheet.create({
   container: {
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
     padding: 10,
   },
   studentName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   major: {
     fontSize: 16,

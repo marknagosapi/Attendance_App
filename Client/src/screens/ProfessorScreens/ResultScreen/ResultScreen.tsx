@@ -6,28 +6,9 @@ import { View, Text, FlatList } from 'react-native';
 
 import {styles} from './ResultScreenStyle'
 
-interface Student {
-  id: number;
-  name: string;
-  present: boolean;
-}
 
 const ResultScreen: React.FC = () => {
-  const [students, setStudents] = useState<Student[]>([
-    { id: 1, name: 'Student 1', present: false },
-    { id: 2, name: 'Student 2', present: false },
-    { id: 3, name: 'Student 3', present: false },
-    { id: 4, name: 'Student 1', present: false },
-    { id: 5, name: 'Student 2', present: false },
-    { id: 6, name: 'Student 3', present: false },
-    { id: 7, name: 'Student 1', present: false },
-    { id: 8, name: 'Student 2', present: false },
-    { id: 9, name: 'Student 3', present: false },
-    { id: 10, name: 'Student 1', present: false },
-    { id: 11, name: 'Student 2', present: false },
-    { id: 12, name: 'Student 3', present: false },
-    // Add more students as needed
-  ]);
+  const [students, setStudents] = useState<Student[]>([]);
 
   const toggleAttendance = (studentId: number) => {
     setStudents((prevStudents) =>
@@ -48,7 +29,7 @@ const ResultScreen: React.FC = () => {
 
   return (
     <View style={{flex:1}}>
-    <Header title="Result Screen"></Header>
+    <Header title="Result Screen"></Header> 
         <View style={styles.container}>
         <View style={styles.headerRow}>
             <Text style={styles.headerText}>Student Names</Text>

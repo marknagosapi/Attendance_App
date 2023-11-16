@@ -188,17 +188,15 @@ const HomeScreen = (props: HomeScreenProps) => {
     </View>
   );
 
-  // students for test purposes
-  const students: Student[] = [];
-  for (let i = 0; i < 40; i++) {
-    students.push(generateRandomStudent());
-  }
-
-  const handleClassPress = (className: string, classCode: string) => {
+  const handleClassPress = (
+    className: string,
+    classCode: string,
+    classId: string
+  ) => {
     props.navigation.navigate("ClassDetailScreen", {
       className,
       classCode,
-      students,
+      classId,
     });
   };
 

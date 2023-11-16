@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, FlatList} from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, FlatList } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
@@ -7,6 +7,7 @@ import { styles } from "./ClassDetailScreenStyle";
 import CustomButton from "@/components/CustomButton";
 import StudentCard from "@/components/StudentCard";
 import Header from "@/components/Header";
+import { BACKEND_URL } from "@/Utils/placeholders";
 
 type ClassDetailScreenRouteProp = RouteProp<
   ProfessorRootStackParamList,
@@ -23,11 +24,35 @@ type Props = {
 };
 
 const ClassDetailScreen: React.FC<Props> = (props) => {
-  const { className, classCode, students } = props.route.params; // Get class details and students from navigation params
+  const { className, classCode, classId} = props.route.params; 
+
+  const [students, setStudents] = useState<Student[]>([]);
+  const getStudents = async () => {
+    await fetch(BACKEND_URL + "/get_class_students?classId=" + classId ,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setStudents(data)
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
+      });
+  };
+
+  useEffect(() => {
+
+    // Get Class Students 
+    getStudents()
+ 
+  }, []);
 
   const handleTakeAttendance = () => {
     console.log("Professor Want's To Take Attendance");
-    props.navigation.navigate("CameraScreen", {});
+    props.navigation.navigate("CameraScreen", {classId});
   };
 
   return (
@@ -39,7 +64,7 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
 
         <FlatList
           data={students}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.userId}
           renderItem={({ item }) => <StudentCard student={item} />}
         />
 
