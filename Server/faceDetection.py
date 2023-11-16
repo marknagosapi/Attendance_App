@@ -52,14 +52,13 @@ async def getFaceData(imageFile,classId):
                 user = getUserById(id)
                 user["userId"] = id
                 user["isPresent"] = True
-                users.append(users)
+                users.append(user)
     
     for id in students["restIds"]:
         user = getUserById(id)
         user["userId"] = id
         user["isPresent"] = False
-        users.append(users)
-
+        users.append(user)
     return users        
     
 
