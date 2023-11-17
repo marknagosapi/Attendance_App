@@ -1,11 +1,12 @@
+
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-
 interface StudentCardProps {
   student: Student;
 }
 
 const StudentCard: React.FC<StudentCardProps> = ({ student }) => {
+ 
   return (
     <View style={styles.container}>
       <Text style={styles.studentName}>{student.userName}</Text>

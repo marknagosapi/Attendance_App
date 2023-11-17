@@ -1,4 +1,7 @@
-import React from "react";
+import Colors from "@/constants/Colors";
+import React,{useState} from "react";
+import { AnimatedCircularProgress } from "react-native-circular-progress";
+
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface ClassCardProps {
@@ -9,6 +12,17 @@ interface ClassCardProps {
 
 const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
   const currentClass = props.classData;
+
+  const progress = (1 / 2) * 100;
+  const [progressColor, setProgressColor] = useState(Colors.usedGreenColor);
+
+  const handleAnimationComplete = () => {
+    setProgressColor("#00A36C");
+
+    setTimeout(() => {
+      setProgressColor(Colors.usedGreenColor);
+    }, 200);
+  };
 
   const openModal = () => {
     props.onHold(currentClass.classId,currentClass.className,currentClass.majors,currentClass.maxAttendance);
@@ -24,13 +38,41 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
       onPress={handlePressOnClass}
       onLongPress={openModal}
     >
-      <View style={styles.leftContent}>
-        <Text style={styles.name}>{currentClass.className}</Text>
-        <Text style={styles.major}>{currentClass.majors.join(", ")}</Text>
-        <Text style={styles.attendanceRequired}>
-          Attendance Required: {currentClass.maxAttendance}
-        </Text>
-      </View>
+      <View style={{display:'flex', flexDirection:'row', justifyContent:"space-evenly"}}>
+        <View style={styles.leftContent}>
+          <Text style={styles.name}>{currentClass.className}</Text>
+          <Text style={styles.major}>{currentClass.majors.join(", ")}</Text>
+          
+        </View>
+        <View>
+          <AnimatedCircularProgress
+            size={70}
+            width={8}
+            fill={100}
+            tintColor={progressColor}
+            backgroundColor="#3d5875"
+            rotation={0} // Initial rotation angle
+            lineCap="round"
+            duration={1200} // Adjust the duration as needed
+            onAnimationComplete={handleAnimationComplete}
+          >
+            {() => (
+              <View>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: Colors.usedGreenColor,
+                    fontWeight: "bold",
+                    alignSelf: "center",
+                  }}
+                >
+                  {currentClass.maxAttendance}
+                </Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
+        </View>
+        </View>
     </TouchableOpacity>
   );
 };

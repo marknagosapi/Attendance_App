@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList,ActivityIndicator } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
@@ -8,6 +8,7 @@ import CustomButton from "@/components/CustomButton";
 import StudentCard from "@/components/StudentCard";
 import Header from "@/components/Header";
 import { BACKEND_URL } from "@/Utils/placeholders";
+import Colors from "@/constants/Colors";
 
 type ClassDetailScreenRouteProp = RouteProp<
   ProfessorRootStackParamList,
@@ -27,6 +28,7 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
   const { className, classCode, classId} = props.route.params; 
 
   const [students, setStudents] = useState<Student[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getStudents = async () => {
     console.log(classId)
@@ -38,9 +40,11 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        setIsLoading(false)
         setStudents(data)
       })
       .catch((error) => {
+        setIsLoading(true)
         console.error("Error fetching classes:", error);
       });
   };
@@ -62,13 +66,17 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
       <Header title={className} goesBack />
       <View style={styles.container}>
         <Text style={styles.sectionTitle}>Class Code: {classCode}</Text>
-        <Text style={styles.sectionTitle}>Students</Text>
 
-        <FlatList
-          data={students}
-          keyExtractor={(item) => item.userId}
-          renderItem={({ item }) => <StudentCard student={item} />}
-        />
+        <Text style={styles.sectionTitle}>Students</Text>
+        {isLoading ? (<View style={[styles.container]}>
+        <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+      </View>):
+      <FlatList
+        data={students}
+        keyExtractor={(item) => item.userId}
+        renderItem={({ item }) => <StudentCard student={item} />}
+      /> }
+        
 
         <CustomButton title="Take Attendance" onPress={handleTakeAttendance} />
       </View>

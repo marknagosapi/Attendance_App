@@ -35,15 +35,24 @@ const CameraScreen = (props: CameraScreenProps) => {
   >(false);
 
   const camareRef = useRef(null);
-  const classId = props.route.params;
+  const classId = props.route.params.classId;
+  const [students, setStudents] = useState<PresentStudent[]>([]);
 
   const [image, setImage] = useState(null);
   const deviceOrientation = ScreenOrientation;
 
+  useEffect(()=>{
+
+    if(students.length>0){
+      props.navigation.replace("ResultScreen", {studentList: students});
+    }
+
+  },[students])
+
   const getAttendance = async () => {
     const imageFile = new FormData();
     imageFile.append("imageFile", {
-      uri: image,
+      uri: "https://www.shutterstock.com/shutterstock/photos/2085055825/display_1500/stock-photo-portrait-of-successful-group-of-business-people-at-modern-office-looking-at-camera-portrait-of-2085055825.jpg",
       type: "image/jpeg",
       name: "image.jpg",
     });
@@ -56,7 +65,7 @@ const CameraScreen = (props: CameraScreenProps) => {
       },
     })
       .then((response) => response.json())
-      .then((data) => {})
+      .then((data) => {setStudents(data)})
       .catch((error) => {
         console.error("Error fetching classes:", error);
       });
@@ -69,9 +78,9 @@ const CameraScreen = (props: CameraScreenProps) => {
     setImage(null);
   }
 
-  function handleImage(){
-    // getAttendance()
-    props.navigation.replace("ResultScreen", {});
+  async function handleImage(){
+    await getAttendance()
+    console.log(students)
   }
 
   useEffect(() => {

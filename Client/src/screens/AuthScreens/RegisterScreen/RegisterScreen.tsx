@@ -47,6 +47,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   }, [userId, error]);
 
   const onRegister = async () => {
+    console.log(major)
     const response = await fetch(BACKEND_URL + "/register", {
       method: "POST",
       headers: {
@@ -56,27 +57,27 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     });
     if (response.status === 200) {
       const data = await response.json();
-  
+      console.log(data)
       if (isObject(data)) {
         console.log("Successfully registered!");
         dispatch(setRegistered({ userId: data.userId, error: null }));
       } else {
         console.log("Failed to register!");
-        dispatch(setRegistered({ userId: null, error: data }));
+        dispatch(setRegistered({ userId: null, error: "Failed To Register" }));
       }
     }
   };
 
   const majors = [
-    "Informatics",
-    "Automatization",
-    "Engineering",
-    "Networking & Communication",
-    "Mechanics",
+    "informatics",
+    "automatization",
+    "engineering",
+    "networking & communication",
+    "mechanics",
   ];
 
-  const onMajorChange = (major: string) => {
-    setSelectedMajor(major.toLowerCase);
+  const onMajorChange = (major: number) => {
+    setSelectedMajor(majors[major]);
   };
 
   const handleRegistration = async () => {
