@@ -59,7 +59,4 @@ async def getFaceData(imageFile,classId):
         user["userId"] = id
         user["isPresent"] = False
         users.append(user)
-    return users        
-    
-
-    
+    return users   

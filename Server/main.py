@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from faceDetection import *
-from models import LoginBody, RegisterBody, CreateClassBody, attendanceBody
-from database import uploadNewUser, getUserByNameAndPassword, addNewClass, getUserClasses, addStudentToClass, addAttendaceForClass
+import models
 import database
 
 app = FastAPI()
@@ -15,25 +14,41 @@ async def check(classId:str, imageFile: UploadFile = File(...)):
   return await getFaceData(imageFile,classId)
 
 @app.post("/register")
-def register(regBody: RegisterBody):
+def register(regBody: models.RegisterBody):
   if regBody.userType == "student" and regBody.major == None: return False
   regBody.major = regBody.major.lower()
-  return uploadNewUser(regBody.model_dump())
+  return database.uploadNewUser(regBody.model_dump())
 
 @app.post("/login")
-def login(loginBody: LoginBody):
-  return getUserByNameAndPassword(loginBody.email, loginBody.password)
-
-@app.post("/create_class")
-def addClass(classBody: CreateClassBody):
-  if classBody.maxAttendance == None: classBody.maxAttendance = 14
-  for i in range(len(classBody.majors)):
-    classBody.majors[i] = classBody.majors[i].lower()
-  return addNewClass(classBody.model_dump())
+def login(loginBody: models.LoginBody):
+  return database.getUserByNameAndPassword(loginBody.email, loginBody.password)
 
 @app.get("/get_user")
 def getUser(userId:str):
   return getUserById(userId)
+
+@app.put("/update_user")
+def updateUser(user: models.UpdateUserBody):
+  return database.updateUser(user)
+
+@app.delete("/delete_user")
+def deleteUser(userId: str):
+  return database.deleteUser(userId)
+
+@app.post("/create_class")
+def addClass(classBody: models.CreateClassBody):
+  if classBody.maxAttendance == None: classBody.maxAttendance = 14
+  for i in range(len(classBody.majors)):
+    classBody.majors[i] = classBody.majors[i].lower()
+  return database.addNewClass(classBody.model_dump())
+
+@app.put("/update_class")
+def updateClass(updateClassBody: models.UpdateClassBody):
+  return database.updateClass(updateClassBody.model_dump())
+
+@app.delete("/delete_class")
+def deleteClass(classId: str):
+  return database.deleteClass(classId)
 
 @app.get("/get_class")
 def getClass(classId:str):
@@ -41,7 +56,7 @@ def getClass(classId:str):
 
 @app.get("/get_classes")
 def getClasses(userId:str):
-  return getUserClasses(userId)
+  return database.getUserClasses(userId)
 
 @app.get("/get_class_students")
 def getClassStudents(classId:str):
@@ -49,8 +64,8 @@ def getClassStudents(classId:str):
 
 @app.get("/join_to_class")
 def joinStudent(studentId:str, classCode:str):
-  return addStudentToClass(classCode,studentId)
+  return database.addStudentToClass(classCode,studentId)
 
 @app.post("/add_attendance")
-def addAttendance(attendanceBody: attendanceBody):
-  return addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)
+def addAttendance(attendanceBody: models.AttendanceBody):
+  return database.addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)

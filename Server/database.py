@@ -1,10 +1,12 @@
 import random, string, json, requests
 import firebase_admin
+import models
 from firebase_admin import credentials, firestore, auth, messaging
-from google.cloud.firestore_v1 import ArrayUnion
+from google.cloud.firestore_v1 import ArrayUnion, ArrayRemove
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
+from google.cloud.firestore_v1.field_path import FieldPath
 
 cred = credentials.Certificate("db_key.json")
 app = firebase_admin.initialize_app(cred)
@@ -13,7 +15,7 @@ apiKey = json.load(open("config.json"))["apiKey"]
 signUpLink = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={apiKey}"
 signInLink = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={apiKey}"
 
-db:Client = firestore.client(app=app)
+db:Client = firestore.client(app)
 
 refUsers = db.collection("Users")
 refFaces = db.collection("Faces")
@@ -27,6 +29,9 @@ def uploadFace(userId,encodedFace:list):
         "encodedFace": encodedFace
     }
     refFaces.document(userId).set(data)
+
+def deleteFace(faceId):
+    refFaces.document(faceId).delete()
 
 def getStudentsFacesAndIds(classId):
     ids = []
@@ -52,11 +57,49 @@ def getStudentsFacesAndIds(classId):
 
 def getUserById(id: str):
     user = refUsers.document(id).get().to_dict()
+    if user == None: return None
+
     user["email"] = getUserEmail(id)
     return user
 
 def getUserEmail(id):
     return auth.get_user(id).email
+
+def updateUser(user: models.UpdateUserBody):
+    try:
+        auth.update_user(user.userId ,email=user.email)
+    except:
+        # check if password is exists and longer than 6
+        if not (user.password != None and len(user.password) >= 6): return "PASSWORD_TO_SHORT"
+        return "INVALID_EMAIL"
+
+    refUsers.document(user.userId).update({
+        "userName": user.name,
+        "major": user.major
+    })
+
+def deleteUser(userId):
+    refUser = refUsers.document(userId)
+    user = refUser.get().to_dict()
+
+    if user == None: return "User is not exits"
+
+    if user["userType"] == "teacher":
+        for refClass in refClasses.where(filter= FieldFilter("teacherId", "==", userId)).stream():
+            refClass._reference.delete()
+
+        refUser.delete()
+        auth.delete_user(userId)
+        return
+
+    for student in db.collection_group("students").stream():
+        if (student.id == userId): student.reference.delete()
+    
+    deleteFace(userId)
+
+    refUser.delete()
+    auth.delete_user(userId)
+    
 
 def uploadNewUser(user):
     regData = {
@@ -129,9 +172,19 @@ def addNewClass(classBody):
 
     return True
 
+def deleteClass(classId):
+    refClass = refClasses.document(classId)
+    
+    refUsers.document(refClass.get().to_dict()["teacherId"]).update({"classes": ArrayRemove([classId])})
+    refClass.delete()
+
+def updateClass(classBody):
+    refClass = refClasses.document(classBody["classId"])
+    del classBody["classId"]
+    refClass.update(classBody)
+
 def getUserClasses(userId):
     user = getUserById(userId)
-    if user == None: return False
     classes = []
 
     if user["userType"] == "teacher":
@@ -154,15 +207,25 @@ def getUserClasses(userId):
     return classes
     
 def addStudentToClass(classCode,studentId):
-    classId = refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()[0].id 
+    classes = refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()
+    if classes == []: return False
+    classId = classes[0]
+
+    if getUserById(studentId) == None: return False
+
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
+    return True
 
 def addAttendaceForClass(classId,studentIds:list[str]):
     refClass = refClasses.document(classId)
     for studentId in studentIds:
-        attendance = refClass.collection("students").document(studentId).get().to_dict()["attendance"] + 1
+        student = refClass.collection("students").document(studentId).get().to_dict()
+        if student == None: return False
+
+        attendance = student["attendance"] + 1
         refClass.collection("students").document(studentId).update({"attendance": attendance})
-    className = refClass.get().to_dict()["className"]
+    return True
+    # className = refClass.get().to_dict()["className"]
 
     # messaging.send(messaging.Message(notification=messaging.Notification(f"Attendance confirmed"),topic=className))
 

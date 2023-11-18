@@ -18,6 +18,19 @@ class CreateClassBody(BaseModel):
   majors: list[str]
   maxAttendance: Optional[int] = None
 
-class attendanceBody(BaseModel):
+class AttendanceBody(BaseModel):
   classId: str
   userIds: list[str]
+
+class UpdateUserBody(BaseModel):
+  userId: str
+  email: Optional[str] = None
+  password: Optional[str] = None
+  name: Optional[str] = None
+  major: Optional[str] = None
+
+class UpdateClassBody(BaseModel):
+  classId: str
+  className: Optional[str] = None
+  majors: Optional[list[str]] = None
+  maxAttendance: Optional[int] = None
