@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 
 import { styles } from "./ResultScreenStyle";
+import { BACKEND_URL } from "@/Utils/placeholders";
 
 type ResultScreenRouteProp = RouteProp<
   ProfessorRootStackParamList,
@@ -24,29 +25,53 @@ type ResultScreenProps = {
 
 const ResultScreen = (props: ResultScreenProps) => {
   const [students, setStudents] = useState<PresentStudent[]>([]);
-  const [change,setChanged] = useState<boolean>(false)
+  const [change, setChanged] = useState<boolean>(false);
 
   useEffect(() => {
-    if(!change){
+    if (!change) {
       setStudents(props.route.params.studentList);
     }
   });
 
-  const toggleAttendance= (studentId: string) => {
-    console.log(students)
+  const toggleAttendance = (studentId: string) => {
     setStudents((prevStudents) => {
       return prevStudents.map((student) =>
-        student.userId === studentId ? { ...student, isPresent: !student.isPresent } : student
+        student.userId === studentId
+          ? { ...student, isPresent: !student.isPresent }
+          : student
       );
     });
-    setChanged(true)
+    setChanged(true);
   };
 
   const getStatusText = (present: boolean) => (present ? "Present" : "Absent");
+  const classId = props.route.params.classId;
 
-  const saveResults = () => {
-    // Process the attendance data here (e.g., send it to an API, save it to storage, etc.)
-    console.log("Attendance data:", students);
+  const addAttendance = async () => {
+    const userIds = students
+      .filter((student) => student.isPresent == true)
+      .map((student) => student.userId);
+    const classId = props.route.params.classId;
+    const postBody = { classId, userIds };
+
+    await fetch(BACKEND_URL + "/add_attendance", {
+      method: "POST",
+      body: JSON.stringify(postBody),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error Updating Attendance:", error);
+      });
+  };
+  const saveResults = async () => {
+    addAttendance();
+    props.navigation.replace("HomeScreen",{});
   };
 
   return (

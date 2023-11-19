@@ -3,6 +3,7 @@ type ProfessorRootStackParamList = {
     className: string;
     classCode: string;
     classId: string;
+    maxAttendance: number;
   };
 
   HomeScreen: {};
@@ -13,6 +14,7 @@ type ProfessorRootStackParamList = {
 
   ResultScreen: {
     studentList: PresentStudent[];
+    classId: string;
   };
 
   // Define other screen params here

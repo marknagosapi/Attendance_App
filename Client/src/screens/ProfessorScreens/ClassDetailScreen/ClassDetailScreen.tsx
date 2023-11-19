@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList,ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ActivityIndicator } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
@@ -25,14 +25,14 @@ type Props = {
 };
 
 const ClassDetailScreen: React.FC<Props> = (props) => {
-  const { className, classCode, classId} = props.route.params; 
+  const { className, classCode, classId, maxAttendance } = props.route.params;
 
   const [students, setStudents] = useState<Student[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const getStudents = async () => {
-    console.log(classId)
-    await fetch(BACKEND_URL + "/get_class_students?classId=" + classId ,{
+  
+    await fetch(BACKEND_URL + "/get_class_students?classId=" + classId, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -40,25 +40,24 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        setIsLoading(false)
-        setStudents(data)
+  
+        setIsLoading(false);
+        setStudents(data);
       })
       .catch((error) => {
-        setIsLoading(true)
+        setIsLoading(true);
         console.error("Error fetching classes:", error);
       });
   };
 
   useEffect(() => {
-
-    // Get Class Students 
-    getStudents()
- 
+    // Get Class Students
+    getStudents();
   }, []);
 
   const handleTakeAttendance = () => {
     console.log("Professor Want's To Take Attendance");
-    props.navigation.navigate("CameraScreen", {classId});
+    props.navigation.navigate("CameraScreen", { classId });
   };
 
   return (
@@ -68,15 +67,17 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
         <Text style={styles.sectionTitle}>Class Code: {classCode}</Text>
 
         <Text style={styles.sectionTitle}>Students</Text>
-        {isLoading ? (<View style={[styles.container]}>
-        <ActivityIndicator size="large" color={Colors.usedGreenColor} />
-      </View>):
-      <FlatList
-        data={students}
-        keyExtractor={(item) => item.userId}
-        renderItem={({ item }) => <StudentCard student={item} />}
-      /> }
-        
+        {isLoading ? (
+          <View style={[styles.container]}>
+            <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+          </View>
+        ) : (
+          <FlatList
+            data={students}
+            keyExtractor={(item) => item.userId}
+            renderItem={({ item }) => <StudentCard student={item} maxAttendance={maxAttendance} />}
+          />
+        )}
 
         <CustomButton title="Take Attendance" onPress={handleTakeAttendance} />
       </View>
