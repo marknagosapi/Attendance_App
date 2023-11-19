@@ -176,6 +176,8 @@ def deleteClass(classId):
     refClass = refClasses.document(classId)
     
     refUsers.document(refClass.get().to_dict()["teacherId"]).update({"classes": ArrayRemove([classId])})
+    for subCollection in refClass.collection("students").list_documents():
+        subCollection.delete()
     refClass.delete()
 
 def updateClass(classBody):
