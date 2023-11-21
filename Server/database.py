@@ -76,13 +76,18 @@ def updateUser(user: models.UpdateUserBody):
         auth.update_user(user.userId ,email=user.email)
     except:
         # check if password is exists and longer than 6
-        if not (user.password != None and len(user.password) >= 6): return "PASSWORD_TO_SHORT"
+        if not (user.password != None and len(user.password) >= 6): return "PASSWORD_TOO_SHORT"
         return "INVALID_EMAIL"
-
-    refUsers.document(user.userId).update({
+    
+    data = {
         "userName": user.name,
         "major": user.major
-    })
+    }
+    if user.name is None: del data["userName"]
+    if user.major is None: del data["major"]
+
+    if data == {}: return
+    refUsers.document(user.userId).update(data)
 
 def deleteUser(userId):
     refUser = refUsers.document(userId)
@@ -147,9 +152,9 @@ def getUserByNameAndPassword(loginBody):
     
     id = req.json()["localId"]
     refUser = refUsers.document(id)
-    user = refUsers.get().to_dict()
+    refUser.update({"notificationToken": loginBody["notificationToken"]})
+    user = refUser.get().to_dict()
     user["id"] = id
-    refUser.set({"notificationToken": user["notificationToken"]})
     return user
 
 def addNewClass(classBody):
@@ -219,10 +224,10 @@ def getUserClasses(userId):
 def addStudentToClass(classCode,studentId):
     classes = refClasses.where(filter= FieldFilter("classCode", "==", classCode)).get()
     if classes == []: return False
-    classId = classes[0]
+    classId = classes[0].id
 
     if getUserById(studentId) is None: return False
-
+    print(classId)
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
     return True
 

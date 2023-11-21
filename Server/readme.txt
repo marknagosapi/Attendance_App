@@ -62,7 +62,7 @@ Endpoints:
                 "name": "string",
                 "major": "string"
             }
-        returns null if successful, else returns "INVALID_EMAIL" or "PASSWORD TO SHORT"
+        returns null if successful, else returns "INVALID_EMAIL" or "PASSWORD TOO SHORT"
     
     DELETE /delete_user?userId=userId
         returns null if successful, else returns "User is not exits"
