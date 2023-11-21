@@ -21,17 +21,23 @@ refUsers = db.collection("Users")
 refFaces = db.collection("Faces")
 refClasses = db.collection("Classes")
 
-def uploadFace(userId,encodedFace:list):
+def uploadFace(userId,encodedFace:list, image):
 
-    if getUserById(userId) == None: return "User not exists"
+    if getUserById(userId) is None: return "User not exists"
 
     data = {
+        "Face": image,
         "encodedFace": encodedFace
     }
     refFaces.document(userId).set(data)
 
-def deleteFace(faceId):
-    refFaces.document(faceId).delete()
+def deleteFace(userId):
+    refFaces.document(userId).delete()
+
+def getFace(userId):
+    face = refFaces.document(userId).get().to_dict()
+    if face is None: return
+    return face["Face"]
 
 def getStudentsFacesAndIds(classId):
     ids = []
@@ -40,10 +46,10 @@ def getStudentsFacesAndIds(classId):
 
     for user in refClasses.document(classId).collection("students").stream():
         userFace = refFaces.document(user.id).get().to_dict()
-        if userFace == None: 
+        if userFace is None: 
             withNoFaces.append(user.id)
             continue
-        if userFace.get("encodedFace",None) == None:
+        if userFace.get("encodedFace",None) is None:
             withNoFaces.append(user.id)
             continue
         ids.append(user.id)
@@ -57,7 +63,7 @@ def getStudentsFacesAndIds(classId):
 
 def getUserById(id: str):
     user = refUsers.document(id).get().to_dict()
-    if user == None: return None
+    if user is None: return None
 
     user["email"] = getUserEmail(id)
     return user
@@ -82,7 +88,7 @@ def deleteUser(userId):
     refUser = refUsers.document(userId)
     user = refUser.get().to_dict()
 
-    if user == None: return "User is not exits"
+    if user is None: return "User is not exits"
 
     if user["userType"] == "teacher":
         for refClass in refClasses.where(filter= FieldFilter("teacherId", "==", userId)).stream():
@@ -131,17 +137,19 @@ def uploadNewUser(user):
 
     return user
 
-def getUserByNameAndPassword(email, password):
+def getUserByNameAndPassword(loginBody):
     req = requests.post(signInLink, data={
-        "email": email,
-        "password": password,
+        "email": loginBody["email"],
+        "password": loginBody["password"],
         "returnSecureToken": True
     })
     if req.status_code == 400: return req.json()["error"]["message"]
     
     id = req.json()["localId"]
-    user = refUsers.document(id).get().to_dict()
+    refUser = refUsers.document(id)
+    user = refUsers.get().to_dict()
     user["id"] = id
+    refUser.set({"notificationToken": user["notificationToken"]})
     return user
 
 def addNewClass(classBody):
@@ -200,7 +208,7 @@ def getUserClasses(userId):
     
     for refClass in refClasses.stream():
         attendance = refClasses.document(refClass.id).collection("students").document(userId).get().to_dict()
-        if attendance == None: continue
+        if attendance is None: continue
         Class = refClass.to_dict()
         Class["attendance"] = attendance["attendance"]
         Class["classId"] = refClass.id
@@ -213,23 +221,29 @@ def addStudentToClass(classCode,studentId):
     if classes == []: return False
     classId = classes[0]
 
-    if getUserById(studentId) == None: return False
+    if getUserById(studentId) is None: return False
 
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
     return True
 
 def addAttendaceForClass(classId,studentIds:list[str]):
     refClass = refClasses.document(classId)
+    notificationTokens = []
     for studentId in studentIds:
         student = refClass.collection("students").document(studentId).get().to_dict()
-        if student == None: return False
+        if student is None: return False
 
         attendance = student["attendance"] + 1
         refClass.collection("students").document(studentId).update({"attendance": attendance})
-    return True
-    # className = refClass.get().to_dict()["className"]
+        notificationTokens.append(refUsers.document(studentId).get().to_dict()["notificationToken"])
 
-    # messaging.send(messaging.Message(notification=messaging.Notification(f"Attendance confirmed"),topic=className))
+    for token in notificationTokens:
+        try:
+            messaging.send(messaging.Message(notification=messaging.Notification(f"Attendance confirmed"),token=token))
+        except:
+            continue
+
+    return True
 
 def getClass(classId):
     return refClasses.document(classId).get().to_dict()

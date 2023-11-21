@@ -32,7 +32,7 @@ async def learnFace(userId, imageFile):
     if len(imageEncoded) > 1: return "More than one face"
     if len(imageEncoded) == 0: return "Face not found"
     
-    return uploadFace(userId,imageEncoded[0].tolist())
+    return uploadFace(userId,imageEncoded[0].tolist(),imageBytes.getvalue())
     
 
 async def getFaceData(imageFile,classId):

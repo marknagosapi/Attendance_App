@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, WebSocket, Response
 from faceDetection import *
 import models
 import database
@@ -8,6 +8,12 @@ app = FastAPI()
 @app.post("/learn_face")
 async def saveFace(userId: str, imageFile: UploadFile = File(...)):
   return await learnFace(userId, imageFile)
+
+@app.get("/get_face")
+def getFace(userId: str):
+  face = database.getFace(userId)
+  if face == None: return face
+  return Response(content=face,media_type="image/png")
 
 @app.post("/check")
 async def check(classId:str, imageFile: UploadFile = File(...)):
@@ -21,7 +27,7 @@ def register(regBody: models.RegisterBody):
 
 @app.post("/login")
 def login(loginBody: models.LoginBody):
-  return database.getUserByNameAndPassword(loginBody.email, loginBody.password)
+  return database.getUserByNameAndPassword(loginBody.model_dump())
 
 @app.get("/get_user")
 def getUser(userId:str):
