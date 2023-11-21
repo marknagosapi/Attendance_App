@@ -44,7 +44,7 @@ const CameraScreen = (props: CameraScreenProps) => {
   useEffect(()=>{
 
     if(students.length>0){
-      props.navigation.replace("ResultScreen", {studentList: students});
+      props.navigation.replace("ResultScreen", {studentList: students,classId: classId});
     }
 
   },[students])

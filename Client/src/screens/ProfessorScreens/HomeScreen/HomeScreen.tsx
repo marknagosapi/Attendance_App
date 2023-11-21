@@ -63,9 +63,28 @@ const HomeScreen = (props: HomeScreenProps) => {
     console.log("handleEdit");
   };
 
-  const handleDelete = () => {
-    console.log("handleDelete");
+  const handleDelete = async () => {
+    await fetch(BACKEND_URL + "/delete_class?classId=" + selectedClass?.classId, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+    
+        const updatedClasses = classes.filter((cls) => cls.classId!== selectedClass?.classId);
+        setClasses(updatedClasses)
+        
+      })
+      .catch((error) => {
+        console.error("Error Deleting Class, ID:"+ selectedClass?.classId, error);
+      });
+ 
+    console.log("[ID]: "+ selectedClass?.classId + " [NAMED]: "+ selectedClass?.className+ " DELETED ");
+    closeModal()
   };
+  
 
   const closeModal = () => {
     setHoldModalVisible(false);
@@ -191,12 +210,14 @@ const HomeScreen = (props: HomeScreenProps) => {
   const handleClassPress = (
     className: string,
     classCode: string,
-    classId: string
+    classId: string,
+    maxAttendance: number
   ) => {
     props.navigation.navigate("ClassDetailScreen", {
       className,
       classCode,
       classId,
+      maxAttendance
     });
   };
 

@@ -72,7 +72,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     "informatics",
     "automatization",
     "engineering",
-    "networking & communication",
+    "networking",
     "mechanics",
   ];
 

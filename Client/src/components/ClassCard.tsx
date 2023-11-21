@@ -1,13 +1,18 @@
 import Colors from "@/constants/Colors";
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface ClassCardProps {
   classData: ClassData;
-  onPressed: (className: string, classCode: string, classId: string) => void;
-  onHold: (classID:string, className:string, classMajors: string[], classAttendance: number) => void;
+  onPressed: (className: string, classCode: string, classId: string, maxAttendance: number) => void;
+  onHold: (
+    classID: string,
+    className: string,
+    classMajors: string[],
+    classAttendance: number
+  ) => void;
 }
 
 const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
@@ -25,11 +30,21 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
   };
 
   const openModal = () => {
-    props.onHold(currentClass.classId,currentClass.className,currentClass.majors,currentClass.maxAttendance);
+    props.onHold(
+      currentClass.classId,
+      currentClass.className,
+      currentClass.majors,
+      currentClass.maxAttendance
+    );
   };
 
   const handlePressOnClass = () => {
-    props.onPressed(currentClass.className, currentClass.classCode, currentClass.classId);
+    props.onPressed(
+      currentClass.className,
+      currentClass.classCode,
+      currentClass.classId,
+      currentClass.maxAttendance
+    );
   };
 
   return (
@@ -38,11 +53,16 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
       onPress={handlePressOnClass}
       onLongPress={openModal}
     >
-      <View style={{display:'flex', flexDirection:'row', justifyContent:"space-evenly"}}>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+        }}
+      >
         <View style={styles.leftContent}>
           <Text style={styles.name}>{currentClass.className}</Text>
           <Text style={styles.major}>{currentClass.majors.join(", ")}</Text>
-          
         </View>
         <View>
           <AnimatedCircularProgress
@@ -72,7 +92,7 @@ const ClassCard: React.FC<ClassCardProps> = (props: ClassCardProps) => {
             )}
           </AnimatedCircularProgress>
         </View>
-        </View>
+      </View>
     </TouchableOpacity>
   );
 };
