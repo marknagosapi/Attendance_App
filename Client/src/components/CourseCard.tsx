@@ -4,8 +4,8 @@ import React, { useEffect , useState} from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 interface CourseCardProps {
-  courseData: ClassData;
-  onPressed: (currentClass: ClassData) => void;
+  courseData: StudentClassData;
+  onPressed: (currentClass: StudentClassData) => void;
 }
 const CourseCard: React.FC<CourseCardProps> = (props: CourseCardProps) => {
   const currentClass = props.courseData;

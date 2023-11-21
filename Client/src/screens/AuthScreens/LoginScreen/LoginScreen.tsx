@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { styles } from "./LoginScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,15 +17,17 @@ function LoginScreen(props: LoginScreenProps) {
   const userId = useSelector((state: RootState) => state.auth.userId);
   const userType = useSelector((state: RootState) => state.auth.userType);
 
-
-  useEffect(()=>{
-    if (!userId) { return;}
+  useEffect(() => {
+    if (!userId) {
+      // registerForFCM(); register
+      return;
+    }
     if (userType == "teacher") {
       props.navigation.replace("HomeScreen");
     } else {
       props.navigation.replace("StudentHomeScreen");
     }
-  },[userId])
+  }, [userId]);
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -60,7 +62,6 @@ function LoginScreen(props: LoginScreenProps) {
         );
         return true;
       } else {
-
         showAlert("This User Does Not Exist");
         return false;
       }

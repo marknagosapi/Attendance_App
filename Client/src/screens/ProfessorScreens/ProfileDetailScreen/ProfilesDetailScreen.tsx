@@ -6,10 +6,21 @@ import { styles } from "./ProfileDetailScreenStyle";
 import CustomButton from "@/components/CustomButton";
 import * as ImagePicker from "expo-image-picker";
 import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
 import { BACKEND_URL } from "@/Utils/placeholders";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/store/LoginSlice";
 
-const ProfileDetailScreen = () => {
+type ProfileScreenProps = {
+  navigation: NativeStackNavigationProp<
+    ProfessorRootStackParamList,
+    "ProfileDetailScreen"
+  >;
+};
+
+const ProfileDetailScreen = (props: ProfileScreenProps) => {
+  const dispatch = useDispatch();
   const userName = useSelector((state: RootState) => state.auth.userName);
   const [username, setUsername] = useState<string | null>(userName);
   const [password, setPassword] = useState("");
@@ -19,14 +30,63 @@ const ProfileDetailScreen = () => {
   // redux data
   const userId = useSelector((state: RootState) => state.auth.userId);
 
+  const deleteUser = async () => {
+    console.log("DELETING USER...");
+    await fetch(BACKEND_URL + "/delete_user?userId=" + userId, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        console.log("USER DELETED!");
+        dispatch(setUser({ userId: null, userName: null, userType: null }));
+        props.navigation.replace("SplashScreen", {});
+      })
+      .catch((error) => {
+        console.error("Error Deleting User:", error);
+      });
+  };
+
+  const updateUser = async () => {
+    const newUser = {
+      userId: userId,
+      email: null,
+      password: null,
+      name: username,
+      major: null,
+    };
+
+    await fetch(BACKEND_URL + "/update_user", {
+      method: "PUT",
+      body: JSON.stringify(newUser),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error Updating User:", error);
+      });
+  };
+
   const handleSave = async () => {
-    // save changes to the database
-    // check if user did changed this field
     if (username != userName) {
-      // upload new User Name
+      await updateUser();
+      console.log("User Name Changed");
     }
 
-    await uploadImage();
+    if (profilePicture != null) {
+      await uploadImage();
+      console.log("New Image Uploaded");
+    }
+
+    console.log("Changes Were Saved!");
   };
 
   const uploadImage = async () => {
@@ -124,11 +184,17 @@ const ProfileDetailScreen = () => {
             onChangeText={(text) => setPassword(text)}
           />
         </View>
+
         <View>
           <CustomButton
             title="Save Changes"
             onPress={handleSave}
           ></CustomButton>
+          <TouchableOpacity onPress={deleteUser}>
+            <View style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>Delete Account</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>

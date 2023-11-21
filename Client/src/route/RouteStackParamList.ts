@@ -1,4 +1,8 @@
 type ProfessorRootStackParamList = {
+
+  SplashScreen:{
+
+  },
   ClassDetailScreen: {
     className: string;
     classCode: string;

@@ -13,7 +13,6 @@ import { styles, modalStyles } from "./HomeScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
-import { generateRandomStudent } from "@/Utils/function";
 import ClassCard from "@/components/ClassCard";
 import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
 import { CheckBox } from "react-native-elements";
@@ -64,27 +63,38 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const handleDelete = async () => {
-    await fetch(BACKEND_URL + "/delete_class?classId=" + selectedClass?.classId, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    await fetch(
+      BACKEND_URL + "/delete_class?classId=" + selectedClass?.classId,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
-    
-        const updatedClasses = classes.filter((cls) => cls.classId!== selectedClass?.classId);
-        setClasses(updatedClasses)
-        
+        const updatedClasses = classes.filter(
+          (cls) => cls.classId !== selectedClass?.classId
+        );
+        setClasses(updatedClasses);
       })
       .catch((error) => {
-        console.error("Error Deleting Class, ID:"+ selectedClass?.classId, error);
+        console.error(
+          "Error Deleting Class, ID:" + selectedClass?.classId,
+          error
+        );
       });
- 
-    console.log("[ID]: "+ selectedClass?.classId + " [NAMED]: "+ selectedClass?.className+ " DELETED ");
-    closeModal()
+
+    console.log(
+      "[ID]: " +
+        selectedClass?.classId +
+        " [NAMED]: " +
+        selectedClass?.className +
+        " DELETED "
+    );
+    closeModal();
   };
-  
 
   const closeModal = () => {
     setHoldModalVisible(false);
@@ -217,7 +227,7 @@ const HomeScreen = (props: HomeScreenProps) => {
       className,
       classCode,
       classId,
-      maxAttendance
+      maxAttendance,
     });
   };
 

@@ -7,9 +7,11 @@ import Colors from "@/constants/Colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 import { setRegistered } from "@/store/RegisterSlice";
+
 import { RootState } from "@/store/store";
 import { showAlert, isObject } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
+import { setUser } from "@/store/LoginSlice";
 
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -25,10 +27,18 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
   const userId = useSelector((state: RootState) => state.register.userId);
   const error = useSelector((state: RootState) => state.register.error);
+  const userNameRegister = useSelector(
+    (state: RootState) => state.register.userName
+  );
+
+  const registerReduxData = () => {
+    dispatch(
+      setUser({ userId: userId, userName: userName, userType: userType })
+    );
+  };
 
   useEffect(() => {
-
-    if(error != null){
+    if (error != null) {
       showAlert(error);
     }
 
@@ -36,18 +46,18 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
       return;
     }
 
+    registerReduxData();
     if (userType == "teacher") {
-      console.log('teacher')
+      console.log("teacher");
       props.navigation.replace("HomeScreen");
     } else {
-      console.log('prof')
+      console.log("prof");
       props.navigation.replace("StudentHomeScreen");
     }
-
   }, [userId, error]);
 
   const onRegister = async () => {
-    console.log(major)
+    console.log(major);
     const response = await fetch(BACKEND_URL + "/register", {
       method: "POST",
       headers: {
@@ -57,13 +67,19 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     });
     if (response.status === 200) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (isObject(data)) {
         console.log("Successfully registered!");
-        dispatch(setRegistered({ userId: data.userId, error: null }));
+        dispatch(
+          setRegistered({
+            userId: data.userId,
+            error: null,
+            userName: userNameRegister,
+          })
+        );
       } else {
         console.log("Failed to register!");
-        dispatch(setRegistered({ userId: null, error: "Failed To Register" }));
+        dispatch(setRegistered({ userId: null, error: data, userName: "" }));
       }
     }
   };

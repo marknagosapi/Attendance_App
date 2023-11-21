@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RootState } from "@/store/store";
-import { connect, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   View,
   Text,
@@ -42,9 +42,8 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     setRefreshData((prevRefreshData) => !prevRefreshData); // Toggles the refreshData state
   };
 
-
   useEffect(() => {
-    getClasses()
+    getClasses();
   }, [refreshData]);
 
   // Function to get classes by teacherIds
@@ -57,7 +56,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
+        console.log(data);
         setClasses(data);
         setLoadingClassess(false);
       })
@@ -123,7 +122,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
       <View style={modalStyles.modalContent}>
         <Text style={modalStyles.title}>Join Class</Text>
         <TextInput
-          placeholder="Enter Code"
+          placeholder="Enter Class Code"
           placeholderTextColor={"#888"}
           style={modalStyles.input}
           value={classCode}
@@ -144,7 +143,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     </View>
   );
 
-  const handleCoursePress = (classData: ClassData) => {
+  const handleCoursePress = (classData: StudentClassData) => {
     props.navigation.navigate("StudentClassDetailScreen", { classData }); // id
   };
 

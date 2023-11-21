@@ -33,7 +33,8 @@
     
     "permissions": {
       "android": {
-        "permissions": ["CAMERA", "RECORD_AUDIO"]
+        "permissions": ["CAMERA", "RECORD_AUDIO", "INTERNET"]
+        
       },
       "ios": {
         "permissions": ["CAMERA", "AUDIO_RECORDING"]

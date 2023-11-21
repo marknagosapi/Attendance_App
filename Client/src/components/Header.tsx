@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: 'bold',
+    maxWidth: 400,
     color: Colors.whiteColor
   },
 
