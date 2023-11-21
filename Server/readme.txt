@@ -18,6 +18,9 @@ Endpoints:
         returns nothing if successful or "User not exists", 
                                         "More than one face" or 
                                         "Face not found" 
+    
+    GET /get_face?userId=userId
+        returns the face as a png if successful or else null
 
     Check attendance in the given class
     POST /check?classId=classId
@@ -41,8 +44,9 @@ Endpoints:
     POST /login 
         body:
             {
-                "userName": "string",   (required)
-                "password": "string"    (required)
+                "userName": "string",           (required)
+                "password": "string",           (required)
+                "notificationToken": "string"   (required)
             }
         returns user if successful, else returns "INVALID_EMAIL" or "INVALID_LOGIN_CREDENTIALS"
     
