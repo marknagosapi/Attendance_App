@@ -7,6 +7,7 @@ import { setUser } from "@/store/LoginSlice";
 import { RootState } from "@/store/store";
 import { showAlert } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
+import { isObject } from "@/Utils/function";
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -16,10 +17,11 @@ function LoginScreen(props: LoginScreenProps) {
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const [notificationToken, setNotificationToken] = useState("");
 
   useEffect(() => {
     if (!userId) {
-      // registerForFCM(); register
+      // register for push notification
       return;
     }
     if (userType == "teacher") {
@@ -46,18 +48,19 @@ function LoginScreen(props: LoginScreenProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, notificationToken }),
     });
 
     if (response.status === 200) {
       const data = await response.json();
-      console.log(data);
-      if (data) {
+      console.log(data)
+      if (isObject(data)) {
         dispatch(
           setUser({
             userId: data.id,
             userName: data.userName,
             userType: data.userType,
+            userPassword: data.password
           })
         );
         return true;

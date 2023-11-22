@@ -11,6 +11,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/LoginSlice";
+import { userAvatarPlaceholder } from "@/Utils/placeholders";
 
 type ProfileScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -18,7 +19,6 @@ type ProfileScreenProps = {
     "ProfileDetailScreen"
   >;
 };
-
 const ProfileDetailScreen = (props: ProfileScreenProps) => {
   const dispatch = useDispatch();
   const userName = useSelector((state: RootState) => state.auth.userName);
@@ -42,7 +42,14 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
       .then((data) => {
         console.log(data);
         console.log("USER DELETED!");
-        dispatch(setUser({ userId: null, userName: null, userType: null }));
+        dispatch(
+          setUser({
+            userId: null,
+            userName: null,
+            userType: null,
+            userPassword: null,
+          })
+        );
         props.navigation.replace("SplashScreen", {});
       })
       .catch((error) => {
@@ -81,10 +88,11 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
       console.log("User Name Changed");
     }
 
-    if (profilePicture != null) {
-      await uploadImage();
-      console.log("New Image Uploaded");
-    }
+    if (password)
+      if (profilePicture != null) {
+        await uploadImage();
+        console.log("New Image Uploaded");
+      }
 
     console.log("Changes Were Saved!");
   };
@@ -152,7 +160,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
                 />
               ) : (
                 <Image
-                  source={require("@/assets/images/profile_pic_placeholder.jpeg")}
+                  source={{ uri: userAvatarPlaceholder }}
                   style={styles.placeHolderImage}
                 />
               )}

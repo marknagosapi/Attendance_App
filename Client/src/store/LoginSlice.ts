@@ -5,12 +5,14 @@ interface AuthState {
   userId: string | null;
   userName: string | null;
   userType: string | null;
+  userPassword: string | null;
 }
 
 const initialState: AuthState = {
   userId: null,
   userName: null,
   userType: null,
+  userPassword: null
 };
 
 // Login Slice
@@ -23,6 +25,7 @@ const LoginSlice = createSlice({
       state.userId = action.payload.userId;
       state.userName = action.payload.userName;
       state.userType = action.payload.userType;
+      state.userPassword = action.payload.userPassword
     },
   },
 });

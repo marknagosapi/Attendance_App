@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   studentName: {
+    maxWidth: 150,
     fontSize: 20,
     fontWeight: "bold",
   },

@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   },
   major: {
     fontSize: 16,
+    maxWidth: 250
   },
   attendanceRequired: {
     fontSize: 14,

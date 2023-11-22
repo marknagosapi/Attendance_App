@@ -72,7 +72,7 @@ const StudentClassDetailScreen: React.FC<Props> = (props) => {
                   alignSelf: "center",
                 }}
               >
-                {currentClass.classData.attendance}/{currentClass.classData.maxAttendance}
+                {currentClass.classData.maxAttendance} / {currentClass.classData.attendance}
               </Text>
               <Text style={{ fontSize: 16, color: "#bbb" }}>
                 Classes Attended

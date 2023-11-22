@@ -54,6 +54,8 @@ const ResultScreen = (props: ResultScreenProps) => {
     const classId = props.route.params.classId;
     const postBody = { classId, userIds };
 
+    console.log(postBody)
+
     await fetch(BACKEND_URL + "/add_attendance", {
       method: "POST",
       body: JSON.stringify(postBody),

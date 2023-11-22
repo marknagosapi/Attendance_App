@@ -184,7 +184,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
             ></CourseCard>
           )}
         />
-        <CustomButton title="Add Class" onPress={toggleModal} />
+        <CustomButton title="Join Class" onPress={toggleModal} />
       </View>
     </View>
   );
