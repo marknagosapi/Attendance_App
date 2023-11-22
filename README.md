@@ -21,10 +21,31 @@ Streamline the process of monitoring attendance in university classrooms with th
    ```bash
    git clone https://github.com/marknagosapi/Attendance_App.git
 
-2.Install Dependencies:
+2. Install Dependencies:
    ```bash
-     cd yourproject
+     cd Attendance_App
      npm install
+
+## Usage
+- **Teacher:**
+  - Log in.
+  - Select class or add a class.
+  - Capture a classroom snapshot.
+  - View identified students for attendance tracking.
+- **Student:**
+  - Log in.
+  - Select class or join a class.
+  - View real-time attendance status.
+## Technology Stack
+  - **Frontend:** React Native
+  - **Backend:** Python (FastAPI), Firebase
+  - **Database:** Firebase Firestore
+## Contributors On This Project:
+  - Lajos Zalán
+  - Nágó Márk
+  - Márk Péter
+
+
 
 
 
