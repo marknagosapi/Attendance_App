@@ -19,6 +19,9 @@ Streamline the process of monitoring attendance in university classrooms with th
 ## Installation
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/yourproject.git
+   git clone https://github.com/marknagosapi/Attendance_App.git
+   cd yourproject
+   npm install
+
 
 
