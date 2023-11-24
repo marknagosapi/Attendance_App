@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, FlatList, ActivityIndicator,  RefreshControl } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
@@ -9,6 +9,8 @@ import StudentCard from "@/components/StudentCard";
 import Header from "@/components/Header";
 import { BACKEND_URL } from "@/Utils/placeholders";
 import Colors from "@/constants/Colors";
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 type ClassDetailScreenRouteProp = RouteProp<
   ProfessorRootStackParamList,
@@ -29,6 +31,16 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
 
   const [students, setStudents] = useState<Student[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setRefreshing] = useState(false);
+
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+  
+    getStudents()
+  
+    setRefreshing(false);
+  }, []);
 
   const getStudents = async () => {
   
@@ -51,8 +63,8 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    // Get Class Students
-    getStudents();
+    async ( ) =>{await getStudents();}
+    
   }, []);
 
   const handleTakeAttendance = () => {
@@ -75,7 +87,9 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
           <FlatList
             data={students}
             keyExtractor={(item) => item.userId}
-            renderItem={({ item }) => <StudentCard student={item} maxAttendance={maxAttendance} />}
+            renderItem={({ item }) => <StudentCard student={item} maxAttendance={maxAttendance} />
+          }
+          refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
           />
         )}
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import {
@@ -9,6 +9,7 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./StudentHomeScreenStyle";
@@ -19,6 +20,7 @@ import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
 import CourseCard from "@/components/CourseCard";
 import Colors from "@/constants/Colors";
 import { showAlert } from "@/Utils/function";
+import { ScrollView } from 'react-native-gesture-handler';
 
 type StudentHomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -36,6 +38,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
   const [refreshData, setRefreshData] = useState(false);
 
   const studentId = useSelector((state: RootState) => state.auth.userId);
+  const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
 
   const refresh = () => {
     // Call this function to re-fetch the data
@@ -147,6 +150,16 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     props.navigation.navigate("StudentClassDetailScreen", { classData }); // id
   };
 
+  const [isRefreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+  
+    getClasses();
+  
+    setRefreshing(false);
+  }, []);
+
   if (loadingClasses) {
     return (
       <View style={[styles.container, styles.horizontal]}>
@@ -159,7 +172,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={BACKEND_URL+"/get_face?userId=" + studentId || userAvatarPlaceholder}
+        userAvatar={userAvatar}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>
@@ -183,6 +196,10 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
               onPressed={handleCoursePress}
             ></CourseCard>
           )}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh}
+ />
+          }
         />
         <CustomButton title="Join Class" onPress={toggleModal} />
       </View>

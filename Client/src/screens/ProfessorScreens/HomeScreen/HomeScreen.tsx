@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./HomeScreenStyle";
@@ -21,6 +22,8 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import ClassHoldModal from "@/components/ClassHoldModal";
 import Colors from "@/constants/Colors";
+import { ScrollView } from 'react-native-gesture-handler';
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -32,6 +35,7 @@ type HomeScreenProps = {
 const HomeScreen = (props: HomeScreenProps) => {
   // redux data
   const teacherId = useSelector((state: RootState) => state.auth.userId);
+  const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
 
   // screen data
   const [className, setClassName] = useState("");
@@ -46,6 +50,15 @@ const HomeScreen = (props: HomeScreenProps) => {
   const [selectedClass, setSelectedClass] = useState<Partial<ClassData> | null>(
     null
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshData(true);
+  
+    refresh()
+  
+    setRefreshData(false);
+  }, []);
+
   const [isHoldModalVisible, setHoldModalVisible] = useState(false);
 
   const handleClassHold = (
@@ -134,7 +147,9 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   useEffect(() => {
-    getClasses();
+    console.log(userAvatar);
+    getClasses()
+    
   }, [refreshData]);
 
   const toggleMajor = (major: string) => {
@@ -243,7 +258,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={BACKEND_URL+"/get_face?userId=" + teacherId || userAvatarPlaceholder}
+        userAvatar={userAvatar} 
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>

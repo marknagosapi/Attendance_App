@@ -15,7 +15,20 @@ export const styles = StyleSheet.create({
       margin: 30,
       marginTop:0
     },
+    picker: {
+      height: 50,
+      width: '100%',
+      backgroundColor: '#e0e0e0',
+    },
+    pickerItem: {
+      fontSize: 16,
+      color: 'blue',
+    },
+    selectedText: {
+      marginTop: 16,
+    },
    
+
     registerButton: {
       backgroundColor: Colors.usedGreenColor,
       borderRadius: Sizes.defaultBorderRadius,
@@ -92,5 +105,38 @@ export const styles = StyleSheet.create({
     selectedMajorText: {
       fontSize: 18,
       marginTop: 10,
+    },
+    dropdown: {
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+    },
+    icon: {
+      marginRight: 5,
+    },
+    label: {
+      position: 'absolute',
+      backgroundColor: 'white',
+      left: 22,
+      top: 8,
+      zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 14,
+    },
+    placeholderStyle: {
+      fontSize: 16,
+    },
+    selectedTextStyle: {
+      fontSize: 16,
+    },
+    iconStyle: {
+      width: 20,
+      height: 20,
+    },
+    inputSearchStyle: {
+      height: 40,
+      fontSize: 16,
     },
   });

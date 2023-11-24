@@ -20,6 +20,8 @@ type HeaderProps = {
 const Header = (props: HeaderProps) => {
   const navigation = useNavigation();
 
+  const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
+
 
   return (
     <View style={styles.header}>
@@ -29,7 +31,7 @@ const Header = (props: HeaderProps) => {
       </View>
       <TouchableOpacity onPress={props.onPress}>
 
-        <Image source={{ uri: props.userAvatar }} style={styles.avatar} />
+        <Image source={{ uri: props.userAvatar}} style={styles.avatar} />
 
       </TouchableOpacity>
     </View>
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 25,
     fontWeight: 'bold',
-    maxWidth: 400,
+    maxWidth: 320,
     color: Colors.whiteColor
   },
 

@@ -86,6 +86,8 @@ export const styles = StyleSheet.create({
 
   subtleInfo: {
     paddingHorizontal: 10,
+  
+
     color: Colors.subtleInfoColor,
   },
 });

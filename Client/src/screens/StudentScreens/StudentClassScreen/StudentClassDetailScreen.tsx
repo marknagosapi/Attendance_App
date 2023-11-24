@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text } from "react-native";
 import Header from "@/components/Header";
 import { styles } from "./StudentClassDetailScreenStyle";
@@ -7,6 +7,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StudentRootStackParamList } from "@/route/RouteStackParamList";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import Colors from "@/constants/Colors";
+
 
 // import CircularProgress from 'react-native-circular-progress-indicator';
 
@@ -30,6 +31,9 @@ const StudentClassDetailScreen: React.FC<Props> = (props) => {
 
   const progress = (currentClass.classData.attendance / currentClass.classData.maxAttendance) * 100;
   const [progressColor, setProgressColor] = useState(Colors.usedGreenColor);
+ 
+  
+
 
   const handleAnimationComplete = () => {
     setProgressColor("#00A36C");

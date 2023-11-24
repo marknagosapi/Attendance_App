@@ -1,5 +1,5 @@
 // ProfileDetailScreen.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity } from "react-native";
 import Header from "@/components/Header";
 import { styles } from "./ProfileDetailScreenStyle";
@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/LoginSlice";
 import { userAvatarPlaceholder } from "@/Utils/placeholders";
 import { Alert } from "react-native";
+import Strings from "@/constants/Strings";
 
 type ProfileScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -23,13 +24,20 @@ type ProfileScreenProps = {
 const ProfileDetailScreen = (props: ProfileScreenProps) => {
   const dispatch = useDispatch();
   const userName = useSelector((state: RootState) => state.auth.userName);
+  const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
+  const userType = useSelector((state: RootState) => state.auth.userType);
   const [username, setUsername] = useState<string | null>(userName);
   const [password, setPassword] = useState("");
-  const [oldPassword, setOldPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   // redux data
   const userId = useSelector((state: RootState) => state.auth.userId);
+
+  useEffect(()=>{
+
+    setProfilePicture(userAvatar)
+
+  },[])
 
   const deleteUser = async () => {
     console.log("DELETING USER...");
@@ -41,13 +49,13 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         console.log("USER DELETED!");
         dispatch(
           setUser({
             userId: null,
             userName: null,
             userType: null,
+            userAvatar: undefined,
           })
         );
         props.navigation.replace("SplashScreen", {});
@@ -110,6 +118,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
   const handleSave = async () => {
     if (username != userName) {
       await updateUser();
+      dispatch(setUser({userId:userId,userName: username,userType: userType, userAvatar: userAvatar}))
       console.log("User Name Changed");
     }
 
@@ -121,6 +130,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
 
     if (profilePicture != null) {
       await uploadImage();
+      dispatch(setUser({userId:userId,userName: username,userType: userType, userAvatar: profilePicture}))
       console.log("New Image Uploaded");
     }
     Alert.alert("UPDATE", "USER SUCCESSFULLY UPDATED!");
@@ -132,10 +142,12 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
     }
 
     const imageFile = new FormData();
+    const fileName = profilePicture.split("/").pop() || "image.jpg";
+
     imageFile.append("imageFile", {
       uri: profilePicture,
       type: "image/jpeg",
-      name: "image.jpg",
+      name: fileName,
     });
 
     try {
@@ -143,15 +155,14 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
         BACKEND_URL + "/learn_face?userId=" + userId,
         {
           method: "POST",
-          body: imageFile,
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          body: imageFile,
         }
       );
 
       const result = await response.json();
-      console.log(result);
       console.log("Image upload result:", result);
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -189,7 +200,9 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
                 />
               ) : (
                 <Image
-                  source={{ uri: "http://127.0.0.1:8000/get_face?userId=" + userId || userAvatarPlaceholder }}
+                  source={{
+                    uri: userAvatarPlaceholder,
+                  }}
                   style={styles.placeHolderImage}
                 />
               )}
@@ -206,13 +219,8 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
             value={username ? username : ""}
             onChangeText={(text) => setUsername(text)}
           />
+
           <Text style={styles.subSectionTitle}>Change Password:</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Current Password "
-            secureTextEntry
-            onChangeText={(text) => setOldPassword(text)}
-          />
 
           <TextInput
             style={styles.input}
@@ -220,6 +228,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
             secureTextEntry
             onChangeText={(text) => setPassword(text)}
           />
+          <Text style={styles.subtleInfo}>{Strings.passwordCaution}</Text>
         </View>
 
         <View>

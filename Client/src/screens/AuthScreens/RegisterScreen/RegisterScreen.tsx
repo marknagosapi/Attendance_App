@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import ModalDropdown from "react-native-modal-dropdown";
 import { styles } from "./RegisterScreenStyle";
 import SwitchSelector from "react-native-switch-selector";
+import ModalDropdown from "react-native-modal-dropdown";
 import Colors from "@/constants/Colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,8 +10,9 @@ import { setRegistered } from "@/store/RegisterSlice";
 
 import { RootState } from "@/store/store";
 import { showAlert, isObject } from "@/Utils/function";
-import { BACKEND_URL } from "@/Utils/placeholders";
+import { BACKEND_URL, MAJORS } from "@/Utils/placeholders";
 import { setUser } from "@/store/LoginSlice";
+import { userAvatarPlaceholder } from "@/Utils/placeholders";
 
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -21,7 +22,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("student");
-  const [major, setSelectedMajor] = useState<string>("informatics");
+  const [major, setSelectedMajor] = useState("informatics");
 
   const dispatch = useDispatch();
 
@@ -31,9 +32,22 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     (state: RootState) => state.register.userName
   );
 
+  const majors = [
+    "Informatics",
+    "Engineering",
+    "Automatisation",
+    "Mechanics",
+    "Networking",
+  ];
+
+  const handleDropdownSelect = (index: number, value: string) => {
+
+    setSelectedMajor(value.toLowerCase());
+  };
+
   const registerReduxData = () => {
     dispatch(
-      setUser({ userId: userId, userName: userName, userType: userType })
+      setUser({ userId: userId, userName: userName, userType: userType, userAvatar: BACKEND_URL+"/get_face?userId="+userId || userAvatarPlaceholder})
     );
   };
 
@@ -84,18 +98,6 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
     }
   };
 
-  const majors = [
-    "informatics",
-    "automatization",
-    "engineering",
-    "networking",
-    "mechanics",
-  ];
-
-  const onMajorChange = (major: number) => {
-    setSelectedMajor(majors[major]);
-  };
-
   const handleRegistration = async () => {
     if (userName == "" || password == "" || email == "") {
       showAlert("Missing Field Data!");
@@ -104,6 +106,8 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
     await onRegister();
   };
+
+  
 
   return (
     <View style={styles.container}>
@@ -143,12 +147,17 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
             <ModalDropdown
               options={majors}
-              defaultValue={majors[0]}
-              onSelect={onMajorChange}
-              style={styles.dropdownButton}
-              textStyle={styles.dropdownButtonText}
-              dropdownStyle={styles.dropdownStyle}
-              dropdownTextStyle={styles.dropdownItemText}
+              defaultValue="Select Major"
+              style={{
+                backgroundColor: '#2ECC71', // Green color
+                borderRadius: 10, // Rounded corners
+                padding: 10,
+                minWidth: 200,
+                alignItems: 'center'
+              }}
+              textStyle={{ fontSize: 16, fontWeight:'bold', color: 'white' }} // White text color
+              onSelect={handleDropdownSelect}
+              defaultIndex={0} // set the defaultIndex if you want to show an initially selected item
             />
           </React.Fragment>
         )}

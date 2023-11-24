@@ -8,6 +8,7 @@ import { RootState } from "@/store/store";
 import { showAlert } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
 import { isObject } from "@/Utils/function";
+import { userAvatarPlaceholder } from "@/Utils/placeholders";
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -17,6 +18,9 @@ function LoginScreen(props: LoginScreenProps) {
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.auth.userId);
   const userType = useSelector((state: RootState) => state.auth.userType);
+  const userName = useSelector((state: RootState) => state.auth.userName);
+  const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
+
   const [notificationToken, setNotificationToken] = useState("");
 
   useEffect(() => {
@@ -24,6 +28,16 @@ function LoginScreen(props: LoginScreenProps) {
       // register for push notification
       return;
     }
+   
+    dispatch(setUser({
+      userId: userId,
+      userName: userName,
+      userType: userType,
+      userAvatar: BACKEND_URL + '/get_face?userId=' + userId
+    }))
+
+    console.log(userAvatar)
+    
     if (userType == "teacher") {
       props.navigation.replace("HomeScreen");
     } else {
@@ -60,6 +74,7 @@ function LoginScreen(props: LoginScreenProps) {
             userId: data.id,
             userName: data.userName,
             userType: data.userType,
+            userAvatar: userAvatarPlaceholder
           })
         );
         return true;

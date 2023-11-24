@@ -1,16 +1,11 @@
 {
   "expo": {
-    "name": "Client",
+    "name": "Present!",
     "slug": "Client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "@/assets/images/hand_logo.png",
+    "icon": "src/assets/images/hand_logo.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "@/assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -19,27 +14,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "@/assets/images/adaptive-icon.png",
+        "foregroundImage": "src/assets/images/hand_logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.nagomark.Client"
     },
     "web": {
-      "favicon": "@/assets/images/favicon.png"
+      "favicon": "src/assets/images/hand_logo.png"
     },
-    
     "experiments": {
       "tsconfigPaths": true
     },
+    "permissions": ["CAMERA","RECORD_AUDIO","INTERNET"],
     
-    "permissions": {
-      "android": {
-        "permissions": ["CAMERA", "RECORD_AUDIO", "INTERNET"]
-        
-      },
-      "ios": {
-        "permissions": ["CAMERA", "AUDIO_RECORDING"]
+    "extra": {
+      "eas": {
+        "projectId": "912b59d5-1500-4a04-8fd0-3b4dfe1d2771"
       }
     }
-    
   }
 }
