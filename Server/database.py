@@ -1,12 +1,14 @@
 import random, string, json, requests
 import firebase_admin
 import models
-from firebase_admin import credentials, firestore, auth, messaging
+from websockets import client
+from os import getppid
+import psutil
+from firebase_admin import credentials, firestore, auth
 from google.cloud.firestore_v1 import ArrayUnion, ArrayRemove
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_query import FieldFilter, BaseCompositeFilter
 from google.cloud.firestore_v1.types import StructuredQuery
-from google.cloud.firestore_v1.field_path import FieldPath
 
 cred = credentials.Certificate("db_key.json")
 app = firebase_admin.initialize_app(cred)
@@ -36,7 +38,7 @@ def deleteFace(userId):
 
 def getFace(userId):
     face = refFaces.document(userId).get().to_dict()
-    if face is None: return
+    if face is None: face = refFaces.document("placeHolder").get().to_dict()
     return face["Face"]
 
 def getStudentsFacesAndIds(classId):
@@ -96,6 +98,7 @@ def deleteUser(userId):
     if user is None: return "User is not exits"
 
     if user["userType"] == "teacher":
+        # Delete teacher's classes
         for refClass in refClasses.where(filter= FieldFilter("teacherId", "==", userId)).stream():
             refClass._reference.delete()
 
@@ -103,6 +106,7 @@ def deleteUser(userId):
         auth.delete_user(userId)
         return
 
+    # Delete studend from classes
     for student in db.collection_group("students").stream():
         if (student.id == userId): student.reference.delete()
     
@@ -136,7 +140,7 @@ def uploadNewUser(user):
         user["classes"] = []
         return user
 
-    # Add student to classes
+    # Add student to classes with the same major
     for refClass in refClasses.where(filter= FieldFilter("majors", "array_contains", user["major"])).get():
         refClasses.document(refClass.id).collection("students").document(userId).set({"attendance": 0})
 
@@ -151,9 +155,7 @@ def getUserByNameAndPassword(loginBody):
     if req.status_code == 400: return req.json()["error"]["message"]
     
     id = req.json()["localId"]
-    refUser = refUsers.document(id)
-    refUser.update({"notificationToken": loginBody["notificationToken"]})
-    user = refUser.get().to_dict()
+    user = refUsers.document(id).get().to_dict()
     user["id"] = id
     return user
 
@@ -180,6 +182,7 @@ def addNewClass(classBody):
 
     refUsers.document(classBody["teacherId"]).update({"classes": ArrayUnion([classId])})
 
+    # Add students with same major
     for student in refUsers.where(filter= compositeFilter).stream():
         refClasses.document(classId).colletion("students").document(student.id).set({"attendance": 0})
 
@@ -198,6 +201,7 @@ def updateClass(classBody):
     del classBody["classId"]
     refClass.update(classBody)
 
+# get user their classes if the user is teacher than without the teacher Id, and if student than geting with attendance
 def getUserClasses(userId):
     user = getUserById(userId)
     classes = []
@@ -231,28 +235,23 @@ def addStudentToClass(classCode,studentId):
     refClasses.document(classId).collection("students").document(studentId).set({"attendance": 0})
     return True
 
-def addAttendaceForClass(classId,studentIds:list[str]):
+# Add 1 to attendance for all of students from list and notify students about it through a websocket
+async def addAttendaceForClass(classId,studentIds:list[str]):
     refClass = refClasses.document(classId)
-    notificationTokens = []
     for studentId in studentIds:
         student = refClass.collection("students").document(studentId).get().to_dict()
-        if student is None: return False
+        if student is None: continue
 
         attendance = student["attendance"] + 1
         refClass.collection("students").document(studentId).update({"attendance": attendance})
-        notificationTokens.append(refUsers.document(studentId).get().to_dict()["notificationToken"])
-
-    for token in notificationTokens:
-        try:
-            messaging.send(messaging.Message(notification=messaging.Notification(f"Attendance confirmed"),token=token))
-        except:
-            continue
-
-    return True
+        async with client.connect(f"ws://localhost:{psutil.Process(getppid()).connections()[0].laddr.port}/websocket?id={studentId}") as websocket:
+            await websocket.send("Attendance Confirmed")
+            await websocket.close()
 
 def getClass(classId):
     return refClasses.document(classId).get().to_dict()
 
+# Gett all student from class with attendance
 def getClassStudents(classId):
     users = []
     for refUser in refClasses.document(classId).collection("students").stream():

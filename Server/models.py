@@ -11,7 +11,6 @@ class RegisterBody(BaseModel):
 class LoginBody(BaseModel):
   email: str
   password: str
-  notificationToken: str
 
 class CreateClassBody(BaseModel):
   teacherId: str

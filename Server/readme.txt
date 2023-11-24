@@ -11,6 +11,9 @@ http://127.0.0.1:8000
 Image upload needed for come in HTTP "form"
 
 Endpoints:
+    a websocket that a user listening on, and get a message if one of the user's attendance is changed
+    WEBSOCKET /websocket?id=id
+
     learn the face of the given user
     POST /learn_face?name=userId
         body:
@@ -117,4 +120,4 @@ Endpoints:
                     "userId2", ...
                 ]
             }
-        returns a boolean if successful or not
+        returns null
