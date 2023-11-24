@@ -49,7 +49,7 @@ const StudentClassDetailScreen: React.FC<Props> = (props) => {
         </Text>
       </View>
       <View style={styles.progressContainer}>
-        <Text style={{ fontSize: 22, padding: 12, fontWeight: "bold" }}>
+        <Text style={{ fontSize: 30, padding: 20, fontWeight: "bold" }}>
           Your attendance:
         </Text>
         <AnimatedCircularProgress
@@ -70,6 +70,7 @@ const StudentClassDetailScreen: React.FC<Props> = (props) => {
                   fontSize: 30,
                   color: Colors.usedGreenColor,
                   alignSelf: "center",
+                  fontWeight: 'bold'
                 }}
               >
                 {currentClass.classData.maxAttendance} / {currentClass.classData.attendance}

@@ -12,6 +12,7 @@ import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/LoginSlice";
 import { userAvatarPlaceholder } from "@/Utils/placeholders";
+import { Alert } from "react-native";
 
 type ProfileScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -47,7 +48,6 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
             userId: null,
             userName: null,
             userType: null,
-            userPassword: null,
           })
         );
         props.navigation.replace("SplashScreen", {});
@@ -82,19 +82,48 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
       });
   };
 
+  const updatePassword = async () => {
+    const newUser = {
+      userId: userId,
+      email: null,
+      password: password,
+      name: null,
+      major: null,
+    };
+
+    await fetch(BACKEND_URL + "/update_user", {
+      method: "PUT",
+      body: JSON.stringify(newUser),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error Updating User:", error);
+      });
+  };
+
   const handleSave = async () => {
     if (username != userName) {
       await updateUser();
       console.log("User Name Changed");
     }
 
-    if (password)
-      if (profilePicture != null) {
-        await uploadImage();
-        console.log("New Image Uploaded");
-      }
+    if (password != "") {
+      await updatePassword();
+      console.log("Update Password!");
+      setPassword("");
+    }
 
-    console.log("Changes Were Saved!");
+    if (profilePicture != null) {
+      await uploadImage();
+      console.log("New Image Uploaded");
+    }
+    Alert.alert("UPDATE", "USER SUCCESSFULLY UPDATED!");
   };
 
   const uploadImage = async () => {
@@ -160,7 +189,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
                 />
               ) : (
                 <Image
-                  source={{ uri: userAvatarPlaceholder }}
+                  source={{ uri: "http://127.0.0.1:8000/get_face?userId=" + userId || userAvatarPlaceholder }}
                   style={styles.placeHolderImage}
                 />
               )}

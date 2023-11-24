@@ -159,7 +159,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={userAvatarPlaceholder}
+        userAvatar={BACKEND_URL+"/get_face?userId=" + studentId || userAvatarPlaceholder}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>

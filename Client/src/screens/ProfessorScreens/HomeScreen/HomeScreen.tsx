@@ -243,7 +243,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={userAvatarPlaceholder}
+        userAvatar={BACKEND_URL+"/get_face?userId=" + teacherId || userAvatarPlaceholder}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>

@@ -60,7 +60,6 @@ function LoginScreen(props: LoginScreenProps) {
             userId: data.id,
             userName: data.userName,
             userType: data.userType,
-            userPassword: data.password
           })
         );
         return true;
