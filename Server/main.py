@@ -1,9 +1,34 @@
 from fastapi import FastAPI, UploadFile, File, WebSocket, Response
-from faceDetection import *
+from faceDetection import learnFace, getFaceData
 import models
 import database
+import starlette.websockets
+import websockets.exceptions
 
 app = FastAPI()
+allWebsokcets: dict[str,list[WebSocket]] = {}
+@app.websocket("/websocket")
+async def websocket(wb: WebSocket, id: str):
+  if database.getUserById(id) is None: return
+  await wb.accept()
+  
+  if allWebsokcets.get(id,None) is None: allWebsokcets[id] = [wb]
+  else: allWebsokcets.get(id).append(wb)
+  
+  while True:
+    try:
+      message = await wb.receive_text()
+      for i in allWebsokcets[id]:
+        await i.send_text(message)
+
+    except starlette.websockets.WebSocketDisconnect:
+      if len(allWebsokcets[id]) == 1: del allWebsokcets[id]
+      else: allWebsokcets[id].remove(wb)
+      break
+    except websockets.exceptions.ConnectionClosedOK:
+      if len(allWebsokcets[id]) == 1: del allWebsokcets[id]
+      else: allWebsokcets[id].remove(wb)
+      break
 
 @app.post("/learn_face")
 async def saveFace(userId: str, imageFile: UploadFile = File(...)):
@@ -31,7 +56,7 @@ def login(loginBody: models.LoginBody):
 
 @app.get("/get_user")
 def getUser(userId:str):
-  return getUserById(userId)
+  return database.getUserById(userId)
 
 @app.put("/update_user")
 def updateUser(user: models.UpdateUserBody):
@@ -73,5 +98,5 @@ def joinStudent(studentId:str, classCode:str):
   return database.addStudentToClass(classCode,studentId)
 
 @app.post("/add_attendance")
-def addAttendance(attendanceBody: models.AttendanceBody):
-  return database.addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)
+async def addAttendance(attendanceBody: models.AttendanceBody):
+  return await database.addAttendaceForClass(attendanceBody.classId,attendanceBody.userIds)
