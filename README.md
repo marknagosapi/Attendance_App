@@ -1,12 +1,51 @@
-# Attendance_App
+# University Attendance Tracking App
 
-This application was made for tracking attendance in classes with the help of your phone's camera!
+Streamline the process of monitoring attendance in university classrooms with this React Native mobile application. Teachers can capture class snapshots, and the built-in image recognition identifies students present. Students can log in to track attendance in real-time.
 
-With React Native Frontend & Python backend we try to create the new generation of tracking attendance
-using the power of AI!
+## Features
+- **Teacher:**
+  - Capture classroom snapshots and identify students.
+  - View a list of identified students for attendance tracking.
 
-#### The Contributors On This Repository & CEO Of The Application:
-- Lajos Zalan
-- Nago Mark
-- Mark Peter
+- **Student:**
+  - Log in to access real-time attendance updates.
+
+## System Requirements
+- **Platforms:**
+  - Android 6.0+
+  - iOS 11+
+- **Camera Access Required**
+
+## Installation
+1. Clone the repository
+   ```bash
+   git clone https://github.com/marknagosapi/Attendance_App.git
+
+2. Install Dependencies:
+   ```bash
+     cd Attendance_App
+     npm install
+
+## Usage
+- **Teacher:**
+  - Log in.
+  - Select class or add a class.
+  - Capture a classroom snapshot.
+  - View identified students for attendance tracking.
+- **Student:**
+  - Log in.
+  - Select class or join a class.
+  - View real-time attendance status.
+## Technology Stack
+  - **Frontend:** React Native
+  - **Backend:** Python (FastAPI), Firebase
+  - **Database:** Firebase Firestore
+## Contributors On This Project:
+  - Lajos Zalán
+  - Nágó Márk
+  - Márk Péter
+
+
+
+
 
