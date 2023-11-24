@@ -38,7 +38,7 @@ def deleteFace(userId):
 
 def getFace(userId):
     face = refFaces.document(userId).get().to_dict()
-    if face is None: return
+    if face is None: face = refFaces.document("placeHolder").get().to_dict()
     return face["Face"]
 
 def getStudentsFacesAndIds(classId):

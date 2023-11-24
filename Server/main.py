@@ -37,7 +37,6 @@ async def saveFace(userId: str, imageFile: UploadFile = File(...)):
 @app.get("/get_face")
 def getFace(userId: str):
   face = database.getFace(userId)
-  if face == None: return face
   return Response(content=face,media_type="image/png")
 
 @app.post("/check")
