@@ -12,7 +12,7 @@ import { RootState } from "@/store/store";
 import { showAlert, isObject } from "@/Utils/function";
 import { BACKEND_URL, MAJORS } from "@/Utils/placeholders";
 import { setUser } from "@/store/LoginSlice";
-import { userAvatarPlaceholder } from "@/Utils/placeholders";
+
 
 type RegisterScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -47,7 +47,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
   const registerReduxData = () => {
     dispatch(
-      setUser({ userId: userId, userName: userName, userType: userType, userAvatar: BACKEND_URL+"/get_face?userId="+userId || userAvatarPlaceholder})
+      setUser({ userId: userId, userName: userName, userType: userType, userAvatar: BACKEND_URL+"/get_face?userId="+userId})
     );
   };
 
@@ -104,7 +104,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
       return;
     }
 
-    await onRegister();
+    onRegister();
   };
 
   

@@ -7,7 +7,6 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
-  RefreshControl
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./HomeScreenStyle";
@@ -15,15 +14,13 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
 import ClassCard from "@/components/ClassCard";
-import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
+import { BACKEND_URL } from "@/Utils/placeholders";
 import { CheckBox } from "react-native-elements";
 import { MAJORS } from "@/Utils/placeholders";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import ClassHoldModal from "@/components/ClassHoldModal";
 import Colors from "@/constants/Colors";
-import { ScrollView } from 'react-native-gesture-handler';
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -50,14 +47,6 @@ const HomeScreen = (props: HomeScreenProps) => {
   const [selectedClass, setSelectedClass] = useState<Partial<ClassData> | null>(
     null
   );
-
-  const onRefresh = useCallback(() => {
-    setRefreshData(true);
-  
-    refresh()
-  
-    setRefreshData(false);
-  }, []);
 
   const [isHoldModalVisible, setHoldModalVisible] = useState(false);
 
@@ -148,8 +137,7 @@ const HomeScreen = (props: HomeScreenProps) => {
 
   useEffect(() => {
     console.log(userAvatar);
-    getClasses()
-    
+    getClasses();
   }, [refreshData]);
 
   const toggleMajor = (major: string) => {
@@ -258,7 +246,7 @@ const HomeScreen = (props: HomeScreenProps) => {
     <View style={{ flex: 1 }}>
       <Header
         title="Home Screen"
-        userAvatar={userAvatar} 
+        userAvatar={userAvatar}
         onPress={onAvatarPress}
       ></Header>
       <View style={styles.container}>

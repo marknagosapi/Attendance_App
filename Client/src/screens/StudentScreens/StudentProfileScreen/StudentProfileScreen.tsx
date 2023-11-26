@@ -9,7 +9,7 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 
 const ProfileDetailScreen = () => {
-  const [username, setUsername] = useState<string | null>('');
+  const [username, setUsername] = useState<string | null  >('');
   const [password, setPassword] = useState('');
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const userName = useSelector((state: RootState) => state.auth.userName);

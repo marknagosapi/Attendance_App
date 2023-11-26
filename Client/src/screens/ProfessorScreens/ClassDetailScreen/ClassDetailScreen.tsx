@@ -9,7 +9,6 @@ import StudentCard from "@/components/StudentCard";
 import Header from "@/components/Header";
 import { BACKEND_URL } from "@/Utils/placeholders";
 import Colors from "@/constants/Colors";
-import { ScrollView } from 'react-native-gesture-handler';
 
 
 type ClassDetailScreenRouteProp = RouteProp<
@@ -63,8 +62,8 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    async ( ) =>{await getStudents();}
-    
+     getStudents()
+  
   }, []);
 
   const handleTakeAttendance = () => {

@@ -16,7 +16,7 @@ import { styles, modalStyles } from "./StudentHomeScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StudentRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
-import { BACKEND_URL, userAvatarPlaceholder } from "@/Utils/placeholders";
+import { BACKEND_URL} from "@/Utils/placeholders";
 import CourseCard from "@/components/CourseCard";
 import Colors from "@/constants/Colors";
 import { showAlert } from "@/Utils/function";

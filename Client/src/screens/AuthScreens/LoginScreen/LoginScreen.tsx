@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator} from "react-native";
 import { styles } from "./LoginScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,8 @@ import { RootState } from "@/store/store";
 import { showAlert } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
 import { isObject } from "@/Utils/function";
-import { userAvatarPlaceholder } from "@/Utils/placeholders";
+import Colors from "@/constants/Colors";
+
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -20,6 +21,7 @@ function LoginScreen(props: LoginScreenProps) {
   const userType = useSelector((state: RootState) => state.auth.userType);
   const userName = useSelector((state: RootState) => state.auth.userName);
   const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [notificationToken, setNotificationToken] = useState("");
 
@@ -53,7 +55,7 @@ function LoginScreen(props: LoginScreenProps) {
       showAlert("Missing Field Data!");
       return;
     }
-    await onLogin();
+    onLogin();
   };
 
   const onLogin = async () => {
@@ -74,7 +76,7 @@ function LoginScreen(props: LoginScreenProps) {
             userId: data.id,
             userName: data.userName,
             userType: data.userType,
-            userAvatar: userAvatarPlaceholder
+            userAvatar: BACKEND_URL + '/get_face?userId=' + "placeHolder"
           })
         );
         return true;
@@ -85,8 +87,16 @@ function LoginScreen(props: LoginScreenProps) {
     }
   };
 
+  if (isLoading) {
+  return(
+      <View style={[styles.container]}>
+        <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+     </View>
+  )
+  }
   return (
     <View style={styles.container}>
+  
       <Text style={styles.title}>Sign In</Text>
       <TextInput
         style={styles.input}

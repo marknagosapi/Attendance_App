@@ -11,7 +11,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { ProfessorRootStackParamList } from "@/route/RouteStackParamList";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/store/LoginSlice";
-import { userAvatarPlaceholder } from "@/Utils/placeholders";
 import { Alert } from "react-native";
 import Strings from "@/constants/Strings";
 
@@ -28,7 +27,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
   const userType = useSelector((state: RootState) => state.auth.userType);
   const [username, setUsername] = useState<string | null>(userName);
   const [password, setPassword] = useState("");
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | undefined| null>(null);
 
   // redux data
   const userId = useSelector((state: RootState) => state.auth.userId);
@@ -201,7 +200,7 @@ const ProfileDetailScreen = (props: ProfileScreenProps) => {
               ) : (
                 <Image
                   source={{
-                    uri: userAvatarPlaceholder,
+                    uri: userAvatar,
                   }}
                   style={styles.placeHolderImage}
                 />
