@@ -51,12 +51,9 @@ def getStudentsFacesAndIds(classId):
         if userFace is None: 
             withNoFaces.append(user.id)
             continue
-        if userFace.get("encodedFace",None) is None:
-            withNoFaces.append(user.id)
-            continue
         ids.append(user.id)
         faces.append(userFace.get("encodedFace"))
-
+        
     return {
         "ids": ids,
         "faces": faces,
