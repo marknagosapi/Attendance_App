@@ -82,8 +82,8 @@ def updateUser(user: models.UpdateUserBody):
         "userName": user.name,
         "major": user.major
     }
-    if user.name is None: del data["userName"]
-    if user.major is None: del data["major"]
+    if user.name is None or user.name == "": del data["userName"]
+    if user.major is None or user.major == "": del data["major"]
 
     if data == {}: return
     refUsers.document(user.userId).update(data)
@@ -181,7 +181,7 @@ def addNewClass(classBody):
 
     # Add students with same major
     for student in refUsers.where(filter= compositeFilter).stream():
-        refClasses.document(classId).colletion("students").document(student.id).set({"attendance": 0})
+        refClasses.document(classId).collection("students").document(student.id).set({"attendance": 0})
 
     return True
 
@@ -196,6 +196,12 @@ def deleteClass(classId):
 def updateClass(classBody):
     refClass = refClasses.document(classBody["classId"])
     del classBody["classId"]
+    
+    if classBody["className"] is None or classBody["className"] == "": del classBody["className"]
+    if classBody["majors"] is None or classBody["majors"] == []: del classBody["majors"]
+    if classBody["maxAttendance"] is None: del classBody["maxAttendance"]
+
+    if classBody == {}: return
     refClass.update(classBody)
 
 # get user their classes if the user is teacher than without the teacher Id, and if student than geting with attendance
