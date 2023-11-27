@@ -60,8 +60,9 @@ const HomeScreen = (props: HomeScreenProps) => {
     setHoldModalVisible(true);
   };
 
-  const handleEdit = () => {
-    console.log("handleEdit");
+  const handleEdit = async () => {
+    console.log("handleClass")
+    closeModal();
   };
 
   const handleDelete = async () => {

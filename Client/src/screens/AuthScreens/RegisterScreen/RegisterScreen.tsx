@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert} from "react-native";
 import { styles } from "./RegisterScreenStyle";
 import SwitchSelector from "react-native-switch-selector";
 import ModalDropdown from "react-native-modal-dropdown";
@@ -23,6 +23,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("student");
   const [major, setSelectedMajor] = useState("informatics");
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -52,14 +53,11 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   };
 
   useEffect(() => {
-    if (error != null) {
-      showAlert(error);
-    }
 
     if (!userId) {
       return;
     }
-
+   
     registerReduxData();
     if (userType == "teacher") {
       console.log("teacher");
@@ -71,7 +69,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
   }, [userId, error]);
 
   const onRegister = async () => {
-    console.log(major);
+    setIsLoading(true)
     const response = await fetch(BACKEND_URL + "/register", {
       method: "POST",
       headers: {
@@ -94,6 +92,8 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
       } else {
         console.log("Failed to register!");
         dispatch(setRegistered({ userId: null, error: data, userName: "" }));
+        setIsLoading(false);
+        Alert.alert("Registration failed", data)
       }
     }
   };
@@ -104,9 +104,19 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
       return;
     }
 
-    onRegister();
+    await onRegister();
+    
   };
 
+
+  if (isLoading) {
+    return(
+        <View style={[styles.container]}>
+          <Text style={{padding:30, fontSize: 20, fontWeight:'bold'}}>Registering...</Text>
+          <ActivityIndicator size="large" color={Colors.usedGreenColor} />
+       </View>
+    )
+    }
   
 
   return (
@@ -147,7 +157,7 @@ const RegistrationScreen = (props: RegisterScreenProps) => {
 
             <ModalDropdown
               options={majors}
-              defaultValue="Select Major"
+              defaultValue={majors[0]}
               style={{
                 backgroundColor: '#2ECC71', // Green color
                 borderRadius: 10, // Rounded corners

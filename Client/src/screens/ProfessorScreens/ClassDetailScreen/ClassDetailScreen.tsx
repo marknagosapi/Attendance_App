@@ -83,6 +83,7 @@ const ClassDetailScreen: React.FC<Props> = (props) => {
             <ActivityIndicator size="large" color={Colors.usedGreenColor} />
           </View>
         ) : (
+          
           <FlatList
             data={students}
             keyExtractor={(item) => item.userId}

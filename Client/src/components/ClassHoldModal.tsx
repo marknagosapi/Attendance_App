@@ -1,3 +1,4 @@
+import { BACKEND_URL } from "@/Utils/placeholders";
 import Colors from "@/constants/Colors";
 import Sizes from "@/constants/Sizes";
 import React, { useEffect, useState } from "react";
@@ -14,7 +15,7 @@ import {
 interface ClassModalProps {
   visible: boolean;
   onClose: () => void;
-  onEdit: () => void;
+  onEdit: () => void
   onDelete: () => void;
   classData: Partial<ClassData>;
 }
@@ -33,11 +34,52 @@ const ClassModal: React.FC<ClassModalProps> = (props: ClassModalProps) => {
     props.onClose();
   };
 
+  const handleEdit = async () => {
+    const newClass = {classId: editedClassData?.classId, className: editedClassData.className, majors:null, maxAttendance: editedClassData.maxAttendance}
+    await fetch(
+      BACKEND_URL + "/update_class",
+      {
+        method: "PUT",
+        body: JSON.stringify(newClass),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error(
+          "Error Updating Class, ID:" + editedClassData?.classId,
+          error
+        );
+      });
+    console.log(newClass);
+
+    console.log(
+      "[ID]: " +
+        editedClassData?.classId +
+        " [NAMED]: " +
+        editedClassData?.className +
+        " UPDATED "
+    );
+    
+
+    props.onEdit();
+  }
+
   return (
     <Modal visible={props.visible} transparent animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <View style={styles.modalInputContainer}>
+            <Text
+              style={styles.changeTitle}
+            >
+              Change Class Name
+            </Text>
             <TextInput
               style={styles.input}
               placeholder="Name"
@@ -46,20 +88,24 @@ const ClassModal: React.FC<ClassModalProps> = (props: ClassModalProps) => {
                 setEditedClassData({ ...editedClassData, className: text });
               }}
             />
-            <TextInput
-              style={styles.input}
-              placeholder="Majors (comma-separated)"
-              value={editedClassData.majors?.join(", ")}
-            />
+            <Text
+              style={styles.changeTitle}
+            >
+              Change Class Attendance
+            </Text>
             <TextInput
               style={styles.input}
               keyboardType="numeric"
               placeholder="Minimum Required Attendance"
               value={editedClassData.maxAttendance?.toString()}
+              onChangeText={(text) => {
+                setEditedClassData({ ...editedClassData, maxAttendance: parseInt(text, 10) | 0});
+              }}
+             
             />
           </View>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={props.onEdit}>
+            <TouchableOpacity style={styles.button} onPress={handleEdit}>
               <Text style={styles.buttonText}>Save</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -83,6 +129,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  changeTitle: {
+    fontSize: 15,
+    fontWeight: "bold",
+    margin: 4,
+    paddingBottom: 1,
+    color: Colors.whiteColor,
   },
   modalContent: {
     width: "80%",

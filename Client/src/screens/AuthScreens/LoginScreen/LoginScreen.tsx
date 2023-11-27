@@ -21,7 +21,7 @@ function LoginScreen(props: LoginScreenProps) {
   const userType = useSelector((state: RootState) => state.auth.userType);
   const userName = useSelector((state: RootState) => state.auth.userName);
   const userAvatar = useSelector((state: RootState) => state.auth.userAvatar);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [notificationToken, setNotificationToken] = useState("");
 
@@ -55,10 +55,12 @@ function LoginScreen(props: LoginScreenProps) {
       showAlert("Missing Field Data!");
       return;
     }
-    onLogin();
+    await onLogin();
+    setIsLoading(false)
   };
 
   const onLogin = async () => {
+    setIsLoading(true)
     const response = await fetch(BACKEND_URL + "/login", {
       method: "POST",
       headers: {
@@ -79,9 +81,11 @@ function LoginScreen(props: LoginScreenProps) {
             userAvatar: BACKEND_URL + '/get_face?userId=' + "placeHolder"
           })
         );
+
         return true;
       } else {
         showAlert("This User Does Not Exist");
+        
         return false;
       }
     }
@@ -90,6 +94,7 @@ function LoginScreen(props: LoginScreenProps) {
   if (isLoading) {
   return(
       <View style={[styles.container]}>
+        <Text style={{padding:20, fontSize: 20}}>Logging in...</Text>
         <ActivityIndicator size="large" color={Colors.usedGreenColor} />
      </View>
   )
