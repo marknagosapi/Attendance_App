@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert} from "react-native";
 import { styles } from "./LoginScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,6 +26,7 @@ function LoginScreen(props: LoginScreenProps) {
   const [notificationToken, setNotificationToken] = useState("");
 
   useEffect(() => {
+    
     if (!userId) {
       // register for push notification
       return;
@@ -37,13 +38,26 @@ function LoginScreen(props: LoginScreenProps) {
       userType: userType,
       userAvatar: BACKEND_URL + '/get_face?userId=' + userId
     }))
-
-    console.log(userAvatar)
     
     if (userType == "teacher") {
       props.navigation.replace("HomeScreen");
     } else {
+      const ws = new WebSocket(BACKEND_URL + "/websocket?id=" + userId);
+      ws.onmessage = (e) => {
+        console.log('Received:', e.data);
+        // Handle incoming messages
+        Alert.alert("Message received", e.data);
+      };
+
+      ws.onerror = (e) => {
+        console.error('WebSocket error:', e);
+      };
+  
+      ws.onclose = (e) => {
+        console.log('WebSocket closed:', e.code, e.reason);
+      };
       props.navigation.replace("StudentHomeScreen");
+    
     }
   }, [userId]);
 

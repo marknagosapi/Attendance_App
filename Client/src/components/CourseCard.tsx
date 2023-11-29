@@ -12,6 +12,7 @@ const CourseCard: React.FC<CourseCardProps> = (props: CourseCardProps) => {
   const [professorName, setProfessorName] = useState<string>("")
 
   const getProfessorName = async (userId: string) => {
+
     await fetch(BACKEND_URL + "/get_user?userId=" + userId, {
       method: "GET",
       headers: {
@@ -29,6 +30,7 @@ const CourseCard: React.FC<CourseCardProps> = (props: CourseCardProps) => {
 
   useEffect(()=>{
 
+    console.log(currentClass.className)
     getProfessorName(currentClass.teacherId);
 
   })

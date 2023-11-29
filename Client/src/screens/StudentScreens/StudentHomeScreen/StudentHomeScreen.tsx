@@ -9,18 +9,17 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import Header from "@/components/Header";
 import { styles, modalStyles } from "./StudentHomeScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StudentRootStackParamList } from "@/route/RouteStackParamList";
 import CustomButton from "@/components/CustomButton";
-import { BACKEND_URL} from "@/Utils/placeholders";
+import { BACKEND_URL } from "@/Utils/placeholders";
 import CourseCard from "@/components/CourseCard";
 import Colors from "@/constants/Colors";
 import { showAlert } from "@/Utils/function";
-import { ScrollView } from 'react-native-gesture-handler';
 
 type StudentHomeScreenProps = {
   navigation: NativeStackNavigationProp<
@@ -59,7 +58,6 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setClasses(data);
         setLoadingClassess(false);
       })
@@ -105,9 +103,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
       showAlert("Please fill in all required fields.");
       return;
     }
-
     // Add New Class By ClassCode
-
     await joinClassByClassCode();
 
     // Clear the input fields and close the modal
@@ -154,9 +150,9 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-  
+    console.log("Refreshing");
     getClasses();
-  
+
     setRefreshing(false);
   }, []);
 
@@ -187,6 +183,7 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
         </Modal>
 
         <Text style={styles.yourClassesText}>Your Classes</Text>
+
         <FlatList
           data={classes}
           keyExtractor={(item) => item.classId}
@@ -197,10 +194,10 @@ const StudentHomeScreen = (props: StudentHomeScreenProps) => {
             ></CourseCard>
           )}
           refreshControl={
-            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh}
- />
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
           }
         />
+
         <CustomButton title="Join Class" onPress={toggleModal} />
       </View>
     </View>

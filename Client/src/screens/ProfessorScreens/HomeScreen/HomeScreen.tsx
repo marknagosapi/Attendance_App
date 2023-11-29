@@ -61,7 +61,7 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   const handleEdit = async () => {
-    console.log("handleClass")
+    refresh();
     closeModal();
   };
 
@@ -137,7 +137,6 @@ const HomeScreen = (props: HomeScreenProps) => {
   };
 
   useEffect(() => {
-    console.log(userAvatar);
     getClasses();
   }, [refreshData]);
 
