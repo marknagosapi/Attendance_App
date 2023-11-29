@@ -33,7 +33,12 @@ async def getFaceData(imageFile,classId):
                 user["userId"] = id
                 user["isPresent"] = True
                 users.append(user)
+                i = students["ids"].index(id)
+                students["faces"].pop(i)
+                students["ids"].pop(i)
+                break
     
+    students["restIds"].extend(students["ids"])
     for id in students["restIds"]:
         user = getUserById(id)
         user["userId"] = id
