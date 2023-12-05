@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Alert} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { styles } from "./LoginScreenStyle";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +16,6 @@ import { showAlert } from "@/Utils/function";
 import { BACKEND_URL } from "@/Utils/placeholders";
 import { isObject } from "@/Utils/function";
 import Colors from "@/constants/Colors";
-
 
 type LoginScreenProps = {
   navigation: NativeStackNavigationProp<any>;
@@ -26,38 +32,38 @@ function LoginScreen(props: LoginScreenProps) {
   const [notificationToken, setNotificationToken] = useState("");
 
   useEffect(() => {
-    
     if (!userId) {
       // register for push notification
       return;
     }
-   
-    dispatch(setUser({
-      userId: userId,
-      userName: userName,
-      userType: userType,
-      userAvatar: BACKEND_URL + '/get_face?userId=' + userId
-    }))
-    
+
+    dispatch(
+      setUser({
+        userId: userId,
+        userName: userName,
+        userType: userType,
+        userAvatar: BACKEND_URL + "/get_face?userId=" + userId,
+      })
+    );
+
     if (userType == "teacher") {
       props.navigation.replace("HomeScreen");
     } else {
       const ws = new WebSocket(BACKEND_URL + "/websocket?id=" + userId);
       ws.onmessage = (e) => {
-        console.log('Received:', e.data);
+        console.log("Received:", e.data);
         // Handle incoming messages
         Alert.alert("Message received", e.data);
       };
 
       ws.onerror = (e) => {
-        console.error('WebSocket error:', e);
+        console.error("WebSocket error:", e);
       };
-  
+
       ws.onclose = (e) => {
-        console.log('WebSocket closed:', e.code, e.reason);
+        console.log("WebSocket closed:", e.code, e.reason);
       };
       props.navigation.replace("StudentHomeScreen");
-    
     }
   }, [userId]);
 
@@ -70,11 +76,11 @@ function LoginScreen(props: LoginScreenProps) {
       return;
     }
     await onLogin();
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   const onLogin = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const response = await fetch(BACKEND_URL + "/login", {
       method: "POST",
       headers: {
@@ -85,37 +91,36 @@ function LoginScreen(props: LoginScreenProps) {
 
     if (response.status === 200) {
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (isObject(data)) {
         dispatch(
           setUser({
             userId: data.id,
             userName: data.userName,
             userType: data.userType,
-            userAvatar: BACKEND_URL + '/get_face?userId=' + "placeHolder"
+            userAvatar: BACKEND_URL + "/get_face?userId=" + "placeHolder",
           })
         );
 
         return true;
       } else {
         showAlert("This User Does Not Exist");
-        
+
         return false;
       }
     }
   };
 
   if (isLoading) {
-  return(
+    return (
       <View style={[styles.container]}>
-        <Text style={{padding:20, fontSize: 20}}>Logging in...</Text>
+        <Text style={{ padding: 20, fontSize: 20 }}>Logging in...</Text>
         <ActivityIndicator size="large" color={Colors.usedGreenColor} />
-     </View>
-  )
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
-  
       <Text style={styles.title}>Sign In</Text>
       <TextInput
         style={styles.input}

@@ -53,7 +53,6 @@ const CameraScreen = (props: CameraScreenProps) => {
   }, [students]);
 
   const getAttendance = async () => {
- 
     // req
     const imageFile = new FormData();
     imageFile.append("imageFile", {
@@ -72,7 +71,7 @@ const CameraScreen = (props: CameraScreenProps) => {
       .then((response) => response.json())
       .then((data) => {
         setStudents(data);
-        console.log(data)
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching classes:", error);
@@ -90,7 +89,6 @@ const CameraScreen = (props: CameraScreenProps) => {
     setIsLoading(true);
     await getAttendance();
     setIsLoading(false);
- 
   }
 
   useEffect(() => {
@@ -134,7 +132,9 @@ const CameraScreen = (props: CameraScreenProps) => {
   if (isLoading) {
     return (
       <View style={[styles.container]}>
-        <Text style={{ padding: 20, fontSize: 25, fontWeight: 'bold' }}>Processing Image...</Text>
+        <Text style={{ padding: 20, fontSize: 25, fontWeight: "bold" }}>
+          Processing Image...
+        </Text>
         <ActivityIndicator size="large" color={Colors.usedGreenColor} />
       </View>
     );
@@ -157,7 +157,6 @@ const CameraScreen = (props: CameraScreenProps) => {
       </View>
     );
   }
-
 
   // is user gave permission for camera usage
   return (
